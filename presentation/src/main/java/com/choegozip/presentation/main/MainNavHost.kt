@@ -18,11 +18,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 //import com.choegozip.presentation.main.album.AlbumScreen
-//import com.choegozip.presentation.main.library.LibraryScreen
+import com.choegozip.presentation.main.library.LibraryScreen
 //import com.choegozip.presentation.main.play.PlayScreen
 
 @Composable
-fun MainNavHost() {
+fun MainNavHost(
+    mainViewModel: MainViewModel
+) {
     val TAG = "MainNavHost"
 
     val navController = rememberNavController()
@@ -32,7 +34,7 @@ fun MainNavHost() {
     Surface {
         Scaffold(
             topBar = {
-//                MainTopBar(navController)
+                MainTopBar(navController)
             },
             content = { paddingValues ->
                 NavHost(
@@ -47,8 +49,7 @@ fun MainNavHost() {
                     startDestination = MainRoute.LIBRARY.route
                 ) {
                     composable(route = MainRoute.LIBRARY.route) {
-                        Log.d(TAG, "route library")
-//                        LibraryScreen(navController)
+                        LibraryScreen(mainViewModel)
                     }
                     composable(route = MainRoute.ALBUM.route) {
 //                        AlbumScreen()
