@@ -8,7 +8,7 @@ import androidx.media3.common.MediaMetadata
 import com.choegozip.domain.model.Media
 
 data class MediaUiModel (
-    val mediaList: MediaItem,
+    val mediaItem: MediaItem,
     val isSelected: Boolean,
 )
 
@@ -40,6 +40,6 @@ fun Media.toUiModel(): MediaUiModel {
 
     return MediaUiModel(
         isSelected = false,
-        mediaList = mediaItem
+        mediaItem = mediaItem
     )
 }
