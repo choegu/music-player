@@ -43,12 +43,26 @@ class MainViewModel @Inject constructor(
             )
         }
     }
+
+    fun onSelectAlbum(album: AlbumUiModel) = intent {
+        reduce {
+            state.copy(
+                selectedAlbum = album
+            )
+        }
+
+        postSideEffect(MainSideEffect.NavigateToAlbumScreen)
+    }
 }
 
 data class MainState(
-    val albumList:List<AlbumUiModel> = emptyList(),
+    // 전체 앨범 리스트
+    val albumList: List<AlbumUiModel> = emptyList(),
+    // 앨범 스크린 이동을 위한 선택한 앨범
+    val selectedAlbum: AlbumUiModel? = null,
 )
 
 sealed interface MainSideEffect {
     class Toast(val message: String) : MainSideEffect
+    data object NavigateToAlbumScreen : MainSideEffect
 }

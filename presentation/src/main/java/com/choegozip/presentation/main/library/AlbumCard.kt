@@ -1,6 +1,7 @@
 package com.choegozip.presentation.main.library
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,11 +26,15 @@ import coil.compose.rememberAsyncImagePainter
 import com.choegozip.presentation.model.AlbumUiModel
 
 @Composable
-fun AlbumCard(album: AlbumUiModel) {
+fun AlbumCard(
+    album: AlbumUiModel,
+    onAlbumClick: (AlbumUiModel) -> Unit
+) {
     Card(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onAlbumClick(album) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.background
         ),

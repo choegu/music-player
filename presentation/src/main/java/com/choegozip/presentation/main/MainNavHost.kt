@@ -17,7 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-//import com.choegozip.presentation.main.album.AlbumScreen
+import androidx.navigation.navOptions
+import com.choegozip.presentation.main.album.AlbumScreen
 import com.choegozip.presentation.main.library.LibraryScreen
 //import com.choegozip.presentation.main.play.PlayScreen
 
@@ -49,10 +50,20 @@ fun MainNavHost(
                     startDestination = MainRoute.LIBRARY.route
                 ) {
                     composable(route = MainRoute.LIBRARY.route) {
-                        LibraryScreen(mainViewModel)
+                        LibraryScreen(
+                            mainViewModel = mainViewModel,
+                            onNavigateToAlbumScreen = {
+                                navController.navigate(
+                                    route = MainRoute.ALBUM.route,
+                                    navOptions = navOptions {
+                                        popUpTo(route = MainRoute.LIBRARY.route)
+                                    }
+                                )
+                            },
+                        )
                     }
                     composable(route = MainRoute.ALBUM.route) {
-//                        AlbumScreen()
+                        AlbumScreen(mainViewModel)
                     }
                 }
 
