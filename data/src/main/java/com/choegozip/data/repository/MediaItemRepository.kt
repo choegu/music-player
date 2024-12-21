@@ -5,13 +5,20 @@ import android.provider.MediaStore
 import com.choegozip.domain.model.Album
 import com.choegozip.domain.model.Media
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * 미디어 데이터 저장소
  */
+@Singleton
 class MediaItemRepository @Inject constructor(
     private val context: Context
 ) {
+
+    // TODO 클래스 초기화 대비하여 룸에 구성
+    // TODO 변경되는 미디어는 브로드캐스트 통해서 룸에 업데이트
+    private lateinit var totalAlbumList: List<Album>
+    private lateinit var totalMediaList: List<Media>
 
     /**
      * 모든 음악 형태의 미디어 아이템 가져오기
@@ -75,6 +82,8 @@ class MediaItemRepository @Inject constructor(
             }
         }
 
+        totalMediaList = mediaItems
+
         return mediaItems
     }
 
@@ -85,24 +94,29 @@ class MediaItemRepository @Inject constructor(
         val albumList = mutableListOf<Album>()
 
         mediaItemList.forEach { mediaItem ->
-            if (albumList.none { it.title == mediaItem.albumTitle }) {
+            if (albumList.none { it.albumId == mediaItem.albumId }) {
                 albumList.add(
                     Album(
                         title = mediaItem.albumTitle,
                         artist = mediaItem.artist,
                         albumId = mediaItem.albumId,
-                        mediaList = mutableListOf(mediaItem)
                     )
                 )
-            } else {
-                albumList.firstOrNull { album ->
-                    album.title == mediaItem.albumTitle
-                }?.run {
-                    mediaList.add(mediaItem)
-                }
             }
         }
 
+        totalAlbumList = albumList
+
         return albumList
+    }
+
+    /**
+     * 미디어 리스트 가져오기
+     */
+    fun getMediaList(albumId: Long): List<Media> {
+        val mediaList = totalMediaList.filter {
+            it.albumId == albumId
+        }
+        return mediaList
     }
 }

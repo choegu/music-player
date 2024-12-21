@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
-import com.choegozip.presentation.main.MainSideEffect
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.AlbumUiModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -25,27 +25,28 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun LibraryScreen(
     mainViewModel: MainViewModel,
-    onNavigateToAlbumScreen: () -> Unit,
+    viewModel: LibraryViewModel = hiltViewModel(),
+    onNavigateToAlbumScreen: (AlbumUiModel) -> Unit,
 ) {
-    val state = mainViewModel.collectAsState().value
+    val state = viewModel.collectAsState().value
     val context = LocalContext.current
 
     // 사이드이펙트 수집
-    mainViewModel.collectSideEffect { sideEffect->
-        // 예외 발생 시, 토스트로 처리
-        if (sideEffect is MainSideEffect.Toast) {
-            Log.d("!!!!!", "error : ${sideEffect.message}")
-            Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-        }
-        // 앨범스크린으로 이동
-        if (sideEffect == MainSideEffect.NavigateToAlbumScreen) {
-            onNavigateToAlbumScreen()
+    viewModel.collectSideEffect { sideEffect->
+        when (sideEffect) {
+            is LibrarySideEffect.Toast -> {
+                Log.d("!!!!!", "error : ${sideEffect.message}")
+                Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
+            }
+            is LibrarySideEffect.NavigateToAlbumScreen -> {
+                onNavigateToAlbumScreen(sideEffect.album)
+            }
         }
     }
 
     LibraryScreen(
         albumList = state.albumList,
-        onAlbumClick = mainViewModel::onSelectAlbum
+        onAlbumClick = viewModel::onClickAlbum
     )
 }
 

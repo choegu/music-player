@@ -3,7 +3,6 @@ package com.choegozip.presentation.main
 import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -17,10 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.choegozip.presentation.main.album.AlbumScreen
 import com.choegozip.presentation.main.library.LibraryScreen
@@ -64,16 +65,32 @@ fun MainNavHost(
                                 mainViewModel = mainViewModel,
                                 onNavigateToAlbumScreen = {
                                     navController.navigate(
-                                        route = MainRoute.ALBUM.route,
+                                        route = MainRoute.ALBUM.route.replace(
+                                            oldValue = "{albumId}",
+                                            newValue = it.albumId.toString()
+                                        ),
                                         navOptions = navOptions {
                                             popUpTo(route = MainRoute.LIBRARY.route)
-                                        }
+                                        },
                                     )
                                 },
                             )
                         }
-                        composable(route = MainRoute.ALBUM.route) {
-                            AlbumScreen(mainViewModel)
+                        composable(
+                            route = MainRoute.ALBUM.route,
+                            arguments = listOf(
+                                navArgument("albumId") {
+                                    type = NavType.LongType
+                                }
+                            )
+                        ) {
+                            val albumId = it.arguments?.getLong("albumId")
+                            albumId?.let {
+                                AlbumScreen(
+                                    mainViewModel = mainViewModel,
+                                    albumId = albumId
+                                )
+                            }
                         }
                     }
 

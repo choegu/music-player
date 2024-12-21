@@ -10,6 +10,8 @@ class GetAlbumListUseCaseImpl @Inject constructor(
 ): GetAlbumListUseCase {
     override fun invoke(): Result<List<Album>> = runCatching {
         val mediaList = mediaItemRepository.getAllMusicAsMediaItems()
+
+        // TODO 미디어 리스트는 제외하고 전송하도록 리팩토링
         mediaItemRepository.createAlbumList(mediaList)
     }
 }

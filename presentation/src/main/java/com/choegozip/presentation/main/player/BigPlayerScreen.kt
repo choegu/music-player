@@ -3,7 +3,6 @@ package com.choegozip.presentation.main.player
 import android.content.Context
 import android.media.AudioManager
 import android.util.Log
-import android.view.Surface
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
@@ -13,22 +12,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.media3.ui.PlayerView
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.util.RepeatModeUtil.REPEAT_TOGGLE_MODE_ALL
-import androidx.media3.common.util.RepeatModeUtil.REPEAT_TOGGLE_MODE_ONE
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.ui.PlayerView.ARTWORK_DISPLAY_MODE_FIT
-import com.choegozip.presentation.main.MainActivity
-import com.choegozip.presentation.main.MainSideEffect
 import com.choegozip.presentation.main.MainViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -36,26 +29,39 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun BigPlayerScreen(
     mainViewModel: MainViewModel,
+    viewModel: BigPlayerViewModel = hiltViewModel(),
     mainPlayerView: PlayerView,
     onClickFold: () -> Unit,
 ) {
     val context = LocalContext.current
 
     // 사이드이펙트 수집
-    mainViewModel.collectSideEffect { sideEffect->
+    viewModel.collectSideEffect { sideEffect->
         // 예외 발생 시, 토스트로 처리
-        if (sideEffect is MainSideEffect.Toast) {
+        if (sideEffect is BigPlayerSideEffect.Toast) {
             Log.d("!!!!!", "error : ${sideEffect.message}")
             Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
         }
-        // 볼륨 컨트롤러 띄우기 TODO 수집 잘 안되는 부분 파악, 뷰모델 새로 만들기 시도
-        if (sideEffect == MainSideEffect.ShowVolumeControl) {
-            Log.d("!!!!!", "collect volume")
+        // 볼륨 컨트롤러 띄우기
+        if (sideEffect == BigPlayerSideEffect.ShowVolumeControl) {
             val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
             audioManager.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
         }
     }
 
+    BigPlayerScreen(
+        mainPlayerView = mainPlayerView,
+        onClickFold = onClickFold,
+        onClickVolume = viewModel::onClickVolume,
+    )
+}
+
+@Composable
+fun BigPlayerScreen(
+    mainPlayerView: PlayerView,
+    onClickFold: () -> Unit,
+    onClickVolume: () -> Unit,
+) {
     Surface(
         color = Color.Transparent
     ) {
@@ -123,7 +129,7 @@ fun BigPlayerScreen(
                                 .align(Alignment.CenterEnd),
                             onClick = {
                                 Log.d("!!!!!", "onclick volume")
-                                mainViewModel.onClickVolume()
+                                onClickVolume()
                             }
                         ) {
                             Icon(
@@ -151,6 +157,4 @@ fun BigPlayerScreen(
             }
         }
     }
-
-
 }

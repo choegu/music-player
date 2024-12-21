@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -21,48 +20,47 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
-import com.choegozip.presentation.main.MainActivity
-import com.choegozip.presentation.main.MainSideEffect
 import com.choegozip.presentation.main.MainViewModel
-import com.choegozip.presentation.model.AlbumUiModel
 import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun AlbumScreen(
-    mainViewModel: MainViewModel
+    mainViewModel: MainViewModel,
+    viewModel: AlbumViewModel = hiltViewModel(),
+    albumId: Long,
 ) {
-    val state = mainViewModel.collectAsState().value
+    val state = viewModel.collectAsState().value
     val context = LocalContext.current
 
     // 사이드이펙트 수집
-    mainViewModel.collectSideEffect { sideEffect->
+    viewModel.collectSideEffect { sideEffect->
         // 예외 발생 시, 토스트로 처리
-        if (sideEffect is MainSideEffect.Toast) {
+        if (sideEffect is AlbumSideEffect.Toast) {
             Log.d("!!!!!", "error : ${sideEffect.message}")
             Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    state.selectedAlbum?.let { album ->
-        AlbumScreen(
-            album = album,
-            onMediaClick = {
-                // TODO 하나씩 재생으로 바꿔야함
-                mainViewModel.playMedia(album)
-            }
-        )
-    } ?: run {
-        // TODO 선택된 앨범 없을 시 시나리오 대응
-    }
+    // 미디어 리스트 가져오기
+    viewModel.getMediaList(albumId)
+
+    AlbumScreen(
+        mediaList = state.mediaList,
+        onMediaClick = {
+            // TODO 재생하기
+//            mainViewModel.playMedia(album)
+        }
+    )
 }
 
 @Composable
 private fun AlbumScreen(
-    album: AlbumUiModel,
+    mediaList: List<MediaUiModel>,
     onMediaClick: (MediaUiModel) -> Unit
 ) {
     Surface {
@@ -74,33 +72,36 @@ private fun AlbumScreen(
                     horizontal = 16.dp
                 )
         ) {
-            // 앨범 아트와 제목, 아티스트 이름
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-                    .padding(
-                        top = 16.dp
-                    )
-            ) {
-                Image(
-                    painter = rememberAsyncImagePainter(model = album.albumArtUri),
-                    contentDescription = "Album Art",
+            mediaList.firstOrNull()?.run {
+                // 앨범 아트와 제목, 아티스트 이름
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(64.dp)
-                        .padding(end = 16.dp),
-                    contentScale = ContentScale.Crop
-                )
-                Column {
-                    Text(
-                        text = album.title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
+                        .fillMaxWidth()
+                        .padding(
+                            top = 16.dp
+                        )
+                ) {
+                    Image(
+                        painter = rememberAsyncImagePainter(model = albumArtUri),
+                        contentDescription = "Album Art",
+                        modifier = Modifier
+                            .size(64.dp)
+                            .padding(end = 16.dp),
+                        contentScale = ContentScale.Crop
                     )
-                    Text(
-                        text = album.artist,
-                        fontSize = 14.sp,
-                        color = Color.Gray
-                    )
+                    Column {
+                        Text(
+                            text = albumTitle,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = artist,
+                            fontSize = 14.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
             }
 
@@ -152,7 +153,7 @@ private fun AlbumScreen(
                     bottom = 16.dp
                 ),
             ) {
-                itemsIndexed(album.mediaList) { index, media ->
+                itemsIndexed(mediaList) { index, media ->
                     MediaItemRow(
                         media = media,
                         index = index,

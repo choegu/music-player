@@ -4,5 +4,5 @@ enum class MainRoute(
     val route: String
 ) {
     LIBRARY(route = "LibraryScreen"),
-    ALBUM(route = "AlbumScreen")
+    ALBUM(route = "AlbumScreen/{albumId}")
 }

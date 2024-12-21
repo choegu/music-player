@@ -26,7 +26,10 @@ class PlaybackRepository @Inject constructor(
     private val context: Context
 ) {
 
+    // TODO 클래스 초기화 대비하여 데이터스토어 저장
     private lateinit var uiComponentInfo: ComponentInfo
+
+    // TODO 클래스 초기화 된 경우 데이터스토어에 있는 문자열로 새로 생성
     private lateinit var controller: MediaController
 
     fun getUiComponentInfo() = uiComponentInfo

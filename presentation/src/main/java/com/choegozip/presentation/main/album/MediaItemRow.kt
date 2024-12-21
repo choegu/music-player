@@ -39,7 +39,7 @@ fun MediaItemRow(
         )
 
         Text(
-            text = media.mediaItem.mediaMetadata.title.toString(),
+            text = media.mediaTitle,
             fontSize = 16.sp,
             modifier = Modifier.weight(1f)
         )
