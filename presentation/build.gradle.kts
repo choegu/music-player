@@ -89,4 +89,10 @@ dependencies {
 
     // Media3 Session
     implementation("androidx.media3:media3-session:1.2.0")
+
+    // Guava
+    implementation("com.google.guava:guava:32.1.2-jre")
+
+    // Guava와 Kotlin Coroutines 통합
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.1")
 }

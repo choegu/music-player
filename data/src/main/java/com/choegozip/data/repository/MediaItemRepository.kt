@@ -1,9 +1,16 @@
 package com.choegozip.data.repository
 
+import android.content.ComponentName
 import android.content.Context
 import android.provider.MediaStore
+import android.util.Log
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.choegozip.data.service.PlaybackService
 import com.choegozip.domain.model.Album
 import com.choegozip.domain.model.Media
+import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 /**
@@ -17,6 +24,21 @@ class MediaItemRepository @Inject constructor(
      * 모든 음악 형태의 미디어 아이템 가져오기
      */
     fun getAllMusicAsMediaItems(): List<Media> {
+
+        runBlocking {
+            val testComponentName1 = ComponentName(context, PlaybackService::class.java)
+            val sessionToken1 = SessionToken(context, testComponentName1)
+            val controller = MediaController.Builder(
+                context,
+                sessionToken1,
+            ).buildAsync().await()
+
+            Log.d("!!!!!", "create controller : ${controller.hashCode()}")
+        }
+
+
+
+
         val mediaItems = mutableListOf<Media>()
 
         val projection = arrayOf(

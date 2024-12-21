@@ -21,10 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
+import com.choegozip.presentation.main.MainActivity
 import com.choegozip.presentation.main.MainSideEffect
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.AlbumUiModel
+import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -35,18 +38,23 @@ fun AlbumScreen(
     val state = mainViewModel.collectAsState().value
     val context = LocalContext.current
 
-    // 예외 발생 시, 토스트로 처리
+    // 사이드이펙트 수집
     mainViewModel.collectSideEffect { sideEffect->
-        when(sideEffect){
-            is MainSideEffect.Toast -> Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
-            MainSideEffect.NavigateToAlbumScreen -> {
-                // TODO 현재 앨범에서 다른 앨범으로 이동하는 시나리오 대응
-            }
+        // 예외 발생 시, 토스트로 처리
+        if (sideEffect is MainSideEffect.Toast) {
+            Log.d("!!!!!", "error : ${sideEffect.message}")
+            Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    state.selectedAlbum?.let {
-        AlbumScreen(it)
+    state.selectedAlbum?.let { album ->
+        AlbumScreen(
+            album = album,
+            onMediaClick = {
+                // TODO 하나씩 재생으로 바꿔야함
+                mainViewModel.playMedia(album)
+            }
+        )
     } ?: run {
         // TODO 선택된 앨범 없을 시 시나리오 대응
     }
@@ -54,19 +62,25 @@ fun AlbumScreen(
 
 @Composable
 private fun AlbumScreen(
-    album: AlbumUiModel
+    album: AlbumUiModel,
+    onMediaClick: (MediaUiModel) -> Unit
 ) {
     Surface {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(16.dp)
+                .padding(
+                    horizontal = 16.dp
+                )
         ) {
             // 앨범 아트와 제목, 아티스트 이름
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
+                    .padding(
+                        top = 16.dp
+                    )
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(model = album.albumArtUri),
@@ -130,14 +144,19 @@ private fun AlbumScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // 곡 목록 리스트
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(
+                    top = 16.dp,
+                    bottom = 16.dp
+                ),
+            ) {
                 itemsIndexed(album.mediaList) { index, media ->
                     MediaItemRow(
                         media = media,
                         index = index,
-                        onMediaItemClick = {
-                            // TODO 점3개 클릭 시나리오
-                        }
+                        onMediaItemClick = onMediaClick
                     )
                 }
             }

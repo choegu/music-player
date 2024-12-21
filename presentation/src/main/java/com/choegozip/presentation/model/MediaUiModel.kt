@@ -9,7 +9,6 @@ import com.choegozip.domain.model.Media
 
 data class MediaUiModel (
     val mediaItem: MediaItem,
-    val isSelected: Boolean,
 )
 
 fun Media.toUiModel(): MediaUiModel {
@@ -39,7 +38,6 @@ fun Media.toUiModel(): MediaUiModel {
         .build()
 
     return MediaUiModel(
-        isSelected = false,
         mediaItem = mediaItem
     )
 }

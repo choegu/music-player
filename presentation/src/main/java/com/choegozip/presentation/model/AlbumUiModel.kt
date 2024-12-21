@@ -8,7 +8,6 @@ data class AlbumUiModel (
     val artist: String,
     val albumArtUri: Uri,
     val mediaList: List<MediaUiModel>,
-    val isSelected: Boolean,
 )
 
 fun Album.toUiModel(): AlbumUiModel {
@@ -17,6 +16,5 @@ fun Album.toUiModel(): AlbumUiModel {
         artist = artist,
         albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId"),
         mediaList = mediaList.map { it.toUiModel() },
-        isSelected = false
     )
 }
