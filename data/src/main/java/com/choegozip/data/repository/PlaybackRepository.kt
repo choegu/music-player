@@ -55,9 +55,6 @@ class PlaybackRepository @Inject constructor(
             }
         )
 
-        controller.duration
-        controller.currentPosition
-
         return playbackComponentInfo
     }
 
