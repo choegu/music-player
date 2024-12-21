@@ -29,6 +29,8 @@ class PlaybackRepository @Inject constructor(
     private lateinit var uiComponentInfo: ComponentInfo
     private lateinit var controller: MediaController
 
+    fun getUiComponentInfo() = uiComponentInfo
+
     suspend fun getPlaybackComponent(uiComponentInfo: ComponentInfo): ComponentInfo {
 
         this.uiComponentInfo = uiComponentInfo
