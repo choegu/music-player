@@ -1,7 +1,9 @@
 package com.choegozip.presentation.main.album
 
 import androidx.lifecycle.ViewModel
+import com.choegozip.domain.model.PlayMedia
 import com.choegozip.domain.usecase.GetMediaListUseCase
+import com.choegozip.domain.usecase.PlayMediaUseCase
 import com.choegozip.presentation.model.MediaUiModel
 import com.choegozip.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AlbumViewModel @Inject constructor(
     private val getMediaListUseCase: GetMediaListUseCase,
+    private val playMediaUseCase: PlayMediaUseCase,
 ) : ViewModel(), ContainerHost<AlbumState, AlbumSideEffect> {
 
     override val container: Container<AlbumState, AlbumSideEffect> = container(
@@ -41,6 +44,13 @@ class AlbumViewModel @Inject constructor(
                 mediaList = mediaList
             )
         }
+    }
+
+    /**
+     * 미디어 재생하기
+     */
+    fun playMedia(playMedia: PlayMedia) = intent {
+        playMediaUseCase(playMedia).getOrThrow()
     }
 }
 

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
+import com.choegozip.domain.model.PlayMedia
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -50,18 +51,17 @@ fun AlbumScreen(
     viewModel.getMediaList(albumId)
 
     AlbumScreen(
+        albumId = albumId,
         mediaList = state.mediaList,
-        onMediaClick = {
-            // TODO 재생하기
-//            mainViewModel.playMedia(album)
-        }
+        onPlayMedia = viewModel::playMedia
     )
 }
 
 @Composable
 private fun AlbumScreen(
+    albumId: Long,
     mediaList: List<MediaUiModel>,
-    onMediaClick: (MediaUiModel) -> Unit
+    onPlayMedia: (PlayMedia) -> Unit
 ) {
     Surface {
         Column(
@@ -113,7 +113,15 @@ private fun AlbumScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = { /* 재생 버튼 클릭 이벤트 */ },
+                    onClick = {
+                        onPlayMedia(
+                            PlayMedia(
+                                albumId = albumId,
+                                mediaIndex = null,
+                                shuffleModeEnabled = false
+                            )
+                        )
+                    },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary
@@ -127,7 +135,15 @@ private fun AlbumScreen(
                 }
 
                 Button(
-                    onClick = { /* 셔플 버튼 클릭 이벤트 */ },
+                    onClick = {
+                        onPlayMedia(
+                            PlayMedia(
+                                albumId = albumId,
+                                mediaIndex = null,
+                                shuffleModeEnabled = true
+                            )
+                        )
+                    },
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary
@@ -157,7 +173,15 @@ private fun AlbumScreen(
                     MediaItemRow(
                         media = media,
                         index = index,
-                        onMediaItemClick = onMediaClick
+                        onMediaItemClick = {
+                            onPlayMedia(
+                                PlayMedia(
+                                    albumId = albumId,
+                                    mediaIndex = index,
+                                    shuffleModeEnabled = false
+                                )
+                            )
+                        }
                     )
                 }
             }

@@ -5,7 +5,6 @@ import com.choegozip.domain.model.ComponentInfo
 import com.choegozip.domain.model.PlaybackState
 import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
 import com.choegozip.domain.usecase.GetPlaybackStateUseCase
-import com.choegozip.domain.usecase.PlayMediaUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
@@ -20,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getPlaybackComponentUseCase: GetPlaybackComponentUseCase,
-    private val playMediaUseCase: PlayMediaUseCase,
     private val getPlaybackStateUseCase: GetPlaybackStateUseCase,
 ) : ViewModel(), ContainerHost<MainState, MainSideEffect> {
 

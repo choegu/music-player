@@ -113,7 +113,7 @@ class MediaItemRepository @Inject constructor(
     /**
      * 미디어 리스트 가져오기
      */
-    fun getMediaList(albumId: Long): List<Media> {
+    fun getMediaListByAlbum(albumId: Long): List<Media> {
         val mediaList = totalMediaList.filter {
             it.albumId == albumId
         }

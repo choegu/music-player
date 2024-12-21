@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
@@ -14,6 +15,7 @@ import androidx.media3.session.SessionToken
 import com.choegozip.data.service.PlaybackService
 import com.choegozip.domain.model.Media
 import com.choegozip.domain.model.ComponentInfo
+import com.choegozip.domain.model.PlayMedia
 import com.choegozip.domain.model.PlaybackState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.guava.await
@@ -32,8 +34,14 @@ class PlaybackRepository @Inject constructor(
     // TODO 클래스 초기화 된 경우 데이터스토어에 있는 문자열로 새로 생성
     private lateinit var controller: MediaController
 
+    /**
+     * 프레젠테이션 모듈 UI 정보
+     */
     fun getUiComponentInfo() = uiComponentInfo
 
+    /**
+     * 재생 컴포넌트 정보 가져오기
+     */
     suspend fun getPlaybackComponent(uiComponentInfo: ComponentInfo): ComponentInfo {
 
         this.uiComponentInfo = uiComponentInfo
@@ -63,6 +71,9 @@ class PlaybackRepository @Inject constructor(
         return playbackComponentInfo
     }
 
+    /**
+     * 재생 상태 가져오기
+     */
     suspend fun getPlaybackState(): PlaybackState {
         return withContext(Dispatchers.Main) {
             PlaybackState(
@@ -72,7 +83,11 @@ class PlaybackRepository @Inject constructor(
         }
     }
 
-    suspend fun playMedia(mediaList: List<Media>) {
+    /**
+     * 미디어 재생하기
+     */
+    suspend fun playMedia(playMedia: PlayMedia, mediaList: List<Media>) {
+        // 미디어 아이템 변환
         val mediaItemList = mediaList.map {
             // 음악 파일의 URI
             val contentUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, it.id.toString())
@@ -102,15 +117,28 @@ class PlaybackRepository @Inject constructor(
 
         withContext(Dispatchers.Main) {
             controller.run {
-                setMediaItems(mediaItemList)
-                shuffleModeEnabled = false
+                // 시작 인덱스 체크
+                playMedia.mediaIndex?.let { mediaIndex ->
+                    setMediaItems(
+                        mediaItemList,
+                        mediaIndex,
+                        C.TIME_UNSET
+                    )
+                } ?: run {
+                    setMediaItems(mediaItemList)
+                }
+                shuffleModeEnabled = playMedia.shuffleModeEnabled
                 prepare()
                 play()
             }
         }
     }
 
-    fun restoreController() {
+    /**
+     * 컨트롤러 종료
+     * TODO
+     */
+    fun releaseController() {
 
     }
 
