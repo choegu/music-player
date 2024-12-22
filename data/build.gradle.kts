@@ -55,6 +55,9 @@ dependencies {
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
 
+    // datastore
+    implementation(libs.datastore)
+
     // Media3 ExoPlayer
     implementation("androidx.media3:media3-exoplayer:1.2.0")
     implementation("androidx.media3:media3-ui:1.2.0")
@@ -67,4 +70,7 @@ dependencies {
 
     // Guava와 Kotlin Coroutines 통합
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.1")
+
+    // gson
+    implementation("com.google.code.gson:gson:2.10.1")
 }

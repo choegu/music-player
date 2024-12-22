@@ -19,22 +19,24 @@ class PlaybackService : BasePlaybackService() {
     override fun getSingleTopActivity(): PendingIntent? {
         val uiComponentInfo = playbackRepository.getUiComponentInfo()
 
-        val intent =
-            Intent()
-                .setComponent(
-                    ComponentName(
-                        uiComponentInfo.packageName,
-                        uiComponentInfo.className
-                    )
-                ).apply {
-                    flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                }
+        return uiComponentInfo?.let {
+            val intent =
+                Intent()
+                    .setComponent(
+                        ComponentName(
+                            uiComponentInfo.packageName,
+                            uiComponentInfo.className
+                        )
+                    ).apply {
+                        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }
 
-        return getActivity(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
-        )
+            getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
+            )
+        }
     }
 }

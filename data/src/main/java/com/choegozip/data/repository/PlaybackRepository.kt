@@ -12,6 +12,8 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.choegozip.data.model.toDomainModel
+import com.choegozip.data.preference.MediaControllerSharedPrefs
 import com.choegozip.data.service.PlaybackService
 import com.choegozip.domain.model.Media
 import com.choegozip.domain.model.ComponentInfo
@@ -26,11 +28,9 @@ import javax.inject.Singleton
 
 @Singleton
 class PlaybackRepository @Inject constructor(
-    private val context: Context
+    private val context: Context,
+    private val mediaControllerSharedPrefs: MediaControllerSharedPrefs,
 ) {
-
-    // TODO 클래스 초기화 대비하여 데이터스토어 저장
-    private lateinit var uiComponentInfo: ComponentInfo
 
     // TODO 클래스 초기화 된 경우 데이터스토어에 있는 문자열로 새로 생성
     private lateinit var controller: MediaController
@@ -43,7 +43,7 @@ class PlaybackRepository @Inject constructor(
     /**
      * 프레젠테이션 모듈 UI 정보
      */
-    fun getUiComponentInfo() = uiComponentInfo
+    fun getUiComponentInfo() = mediaControllerSharedPrefs.getUiComponent()
 
     /**
      * 재생 컴포넌트 정보 가져오기
@@ -62,7 +62,7 @@ class PlaybackRepository @Inject constructor(
             }
         }
 
-        this.uiComponentInfo = uiComponentInfo
+        mediaControllerSharedPrefs.setUiComponent(uiComponentInfo)
 
         val playbackServiceComponent = ComponentName(context, PlaybackService::class.java)
         val playbackComponentInfo = ComponentInfo(
@@ -92,6 +92,9 @@ class PlaybackRepository @Inject constructor(
             }
         }
         controller.addListener(playWhenReadyListener)
+
+        // 연결 직후 1회 방출
+        flow.tryEmit(controller.playWhenReady)
     }
 
     /**
@@ -114,6 +117,14 @@ class PlaybackRepository @Inject constructor(
             }
         }
         controller.addListener(positionChangedListener)
+
+        // 연결 직후 1회 방출
+        flow.tryEmit(
+            PlaybackPosition(
+                duration = controller.duration,
+                currentPosition = controller.currentPosition
+            )
+        )
     }
 
     /**
@@ -122,21 +133,13 @@ class PlaybackRepository @Inject constructor(
     fun getMediaItemTransition(flow: MutableSharedFlow<Media>) {
         mediaItemTransitionListener = object : Player.Listener {
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                val metadata = mediaItem?.mediaMetadata
-                val extras = metadata?.extras
-                val media = Media(
-                    id = mediaItem?.mediaId?.toLongOrNull() ?: -1,
-                    displayName = metadata?.description.toString(),
-                    artist = metadata?.artist.toString(),
-                    albumTitle = metadata?.albumTitle.toString(),
-                    albumId = extras?.getLong("albumId") ?: -1,
-                    duration = extras?.getLong("duration") ?: -1,
-                    title = metadata?.title.toString()
-                )
-                flow.tryEmit(media)
+                flow.tryEmit(mediaItem.toDomainModel())
             }
         }
         controller.addListener(mediaItemTransitionListener)
+
+        // 연결 직후 1회 방출
+        flow.tryEmit(controller.currentMediaItem.toDomainModel())
     }
 
     /**
