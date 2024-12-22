@@ -17,7 +17,10 @@ import com.choegozip.domain.model.Media
 import com.choegozip.domain.model.ComponentInfo
 import com.choegozip.domain.model.PlayMedia
 import com.choegozip.domain.model.PlaybackState
+import com.choegozip.domain.model.PlayerEvent
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -33,6 +36,8 @@ class PlaybackRepository @Inject constructor(
 
     // TODO 클래스 초기화 된 경우 데이터스토어에 있는 문자열로 새로 생성
     private lateinit var controller: MediaController
+
+    private lateinit var controllerListener: Player.Listener
 
     /**
      * 프레젠테이션 모듈 UI 정보
@@ -60,15 +65,33 @@ class PlaybackRepository @Inject constructor(
                 sessionToken,
             ).buildAsync().await()
 
-        controller.addListener(
-            object : Player.Listener {
-                override fun onEvents(player: Player, events: Player.Events) {
-                    Log.d("!!!!!", "events : $events")
-                }
-            }
-        )
-
         return playbackComponentInfo
+    }
+
+    fun getPlayerEvents(flow: MutableSharedFlow<PlayerEvent>) {
+        Log.d("!!!!!", "start get events")
+
+        // 기존 리스너 제거
+        if (::controllerListener.isInitialized) {
+            controller.removeListener(controllerListener)
+        }
+
+        // 인입된 플로우로 리스너 업데이트
+        controllerListener = object : Player.Listener {
+            override fun onEvents(player: Player, events: Player.Events) {
+                Log.d("!!!!!", "events : $events")
+
+                // TODO 이벤트 체크하여 리스트에 담는 작업
+                flow.tryEmit(
+                    PlayerEvent(
+                        eventList = listOf(events.hashCode())
+                    )
+                )
+            }
+        }
+
+        // 새 리스너 추가
+        controller.addListener(controllerListener)
     }
 
     /**
@@ -136,6 +159,7 @@ class PlaybackRepository @Inject constructor(
 
     /**
      * 컨트롤러 종료
+     * 리스너 해제
      * TODO
      */
     fun releaseController() {

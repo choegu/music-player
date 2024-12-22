@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import com.choegozip.domain.model.PlaybackState
+import com.choegozip.domain.model.PlayerEvent
 import com.choegozip.presentation.main.MainViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -42,6 +44,7 @@ fun SmallPlayerScreen(
     }
 
     SmallPlayerScreen(
+        playerEvent = state.playerEventFlow.collectAsState(initial = PlayerEvent(emptyList())).value,
         playbackState = state.playbackState,
         onClickSpread = onClickSpread,
     )
@@ -49,6 +52,7 @@ fun SmallPlayerScreen(
 
 @Composable
 private fun SmallPlayerScreen(
+    playerEvent: PlayerEvent,
     playbackState: PlaybackState,
     onClickSpread: () -> Unit,
 ) {
@@ -77,6 +81,12 @@ private fun SmallPlayerScreen(
                 text = playbackState.duration.toString(),
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
+            )
+
+            Text(
+                text = playerEvent.toString(),
+                modifier = Modifier
+                    .align(Alignment.Center)
             )
         }
     }

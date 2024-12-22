@@ -2,9 +2,11 @@ package com.choegozip.data.di
 
 import com.choegozip.data.usecase.GetPlaybackComponentUseCaseImpl
 import com.choegozip.data.usecase.GetPlaybackStateUseCaseImpl
+import com.choegozip.data.usecase.GetPlayerEventsUseCaseImpl
 import com.choegozip.data.usecase.PlayMediaUseCaseImpl
 import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
 import com.choegozip.domain.usecase.GetPlaybackStateUseCase
+import com.choegozip.domain.usecase.GetPlayerEventsUseCase
 import com.choegozip.domain.usecase.PlayMediaUseCase
 import dagger.Binds
 import dagger.Module
@@ -22,4 +24,7 @@ abstract class PlaybackModule {
 
     @Binds
     abstract fun bindGetPlaybackStateUseCase(uc: GetPlaybackStateUseCaseImpl): GetPlaybackStateUseCase
+
+    @Binds
+    abstract fun bindGetPlayerEventsUseCase(uc: GetPlayerEventsUseCaseImpl): GetPlayerEventsUseCase
 }

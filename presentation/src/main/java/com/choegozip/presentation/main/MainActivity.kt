@@ -3,6 +3,7 @@ package com.choegozip.presentation.main
 import android.content.ComponentName
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -44,6 +45,28 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 상태 관찰
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.container.stateFlow.collect { state ->
+                }
+            }
+        }
+
+        // 사이드 이펙트 관찰
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                mainViewModel.container.sideEffectFlow.collect { sideEffect ->
+                    when (sideEffect) {
+                        is MainSideEffect.Toast -> {
+                            Log.d("!!!!!", "error : ${sideEffect.message}")
+                            Toast.makeText(applicationContext, sideEffect.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
 
         // 재생 컴포넌트 요청
         lifecycleScope.launch {
