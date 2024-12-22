@@ -9,9 +9,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.media3.ui.PlayerView
@@ -27,6 +24,7 @@ import com.choegozip.presentation.main.album.AlbumScreen
 import com.choegozip.presentation.main.library.LibraryScreen
 import com.choegozip.presentation.main.player.BigPlayerScreen
 import com.choegozip.presentation.main.player.SmallPlayerScreen
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun MainNavHost(
@@ -36,8 +34,7 @@ fun MainNavHost(
     val TAG = "MainNavHost"
 
     val navController = rememberNavController()
-
-    var isExpanded by remember { mutableStateOf(false) }
+    val mainState = mainViewModel.collectAsState().value
 
     Surface {
         Box(
@@ -96,23 +93,23 @@ fun MainNavHost(
 
                 },
                 bottomBar = {
-                    if (!isExpanded) {
+                    if (!mainState.isExpanded) {
                         SmallPlayerScreen(
                             mainViewModel = mainViewModel,
                             onClickSpread = {
-                                isExpanded = true
+                                mainViewModel.toggleExpanded()
                             },
                         )
                     }
                 },
             )
 
-            if (isExpanded) {
+            if (mainState.isExpanded) {
                 BigPlayerScreen(
                     mainViewModel = mainViewModel,
                     mainPlayerView = mainPlayerView,
                     onClickFold = {
-                        isExpanded = false
+                        mainViewModel.toggleExpanded()
                     },
                 )
             }

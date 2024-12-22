@@ -1,6 +1,7 @@
 package com.choegozip.presentation.main.album
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -35,6 +36,7 @@ fun AlbumScreen(
     viewModel: AlbumViewModel = hiltViewModel(),
     albumId: Long,
 ) {
+    val mainState = mainViewModel.collectAsState().value
     val state = viewModel.collectAsState().value
     val context = LocalContext.current
 
@@ -51,6 +53,8 @@ fun AlbumScreen(
     viewModel.getMediaList(albumId)
 
     AlbumScreen(
+        isExpanded = mainState.isExpanded,
+        toggleExpand = mainViewModel::toggleExpanded,
         albumId = albumId,
         mediaList = state.mediaList,
         onPlayMedia = viewModel::playMedia
@@ -59,6 +63,8 @@ fun AlbumScreen(
 
 @Composable
 private fun AlbumScreen(
+    isExpanded: Boolean,
+    toggleExpand: () -> Unit,
     albumId: Long,
     mediaList: List<MediaUiModel>,
     onPlayMedia: (PlayMedia) -> Unit
@@ -186,5 +192,11 @@ private fun AlbumScreen(
                 }
             }
         }
+    }
+
+    BackHandler(
+        enabled = isExpanded
+    ) {
+        toggleExpand()
     }
 }

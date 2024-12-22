@@ -1,6 +1,7 @@
 package com.choegozip.presentation.main.library
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,6 +29,7 @@ fun LibraryScreen(
     viewModel: LibraryViewModel = hiltViewModel(),
     onNavigateToAlbumScreen: (AlbumUiModel) -> Unit,
 ) {
+    val mainState = mainViewModel.collectAsState().value
     val state = viewModel.collectAsState().value
     val context = LocalContext.current
 
@@ -45,6 +47,8 @@ fun LibraryScreen(
     }
 
     LibraryScreen(
+        isExpanded = mainState.isExpanded,
+        toggleExpand = mainViewModel::toggleExpanded,
         albumList = state.albumList,
         onAlbumClick = viewModel::onClickAlbum
     )
@@ -52,8 +56,10 @@ fun LibraryScreen(
 
 @Composable
 private fun LibraryScreen(
+    isExpanded: Boolean,
+    toggleExpand: () -> Unit,
     albumList: List<AlbumUiModel>,
-    onAlbumClick: (AlbumUiModel) -> Unit
+    onAlbumClick: (AlbumUiModel) -> Unit,
 ) {
     Surface {
         LazyVerticalGrid(
@@ -71,6 +77,12 @@ private fun LibraryScreen(
                 )
             }
         }
+    }
+
+    BackHandler(
+        enabled = isExpanded
+    ) {
+        toggleExpand()
     }
 }
 

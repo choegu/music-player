@@ -71,6 +71,17 @@ class MainViewModel @Inject constructor(
     private var positionUpdateJob: Job? = null
 
     /**
+     * 플레이어 확장 여부 토글
+     */
+    fun toggleExpanded() = intent {
+        reduce {
+            state.copy(
+                isExpanded = !state.isExpanded
+            )
+        }
+    }
+
+    /**
      * 재생 상태 관찰 및 코루틴 관리
      */
     private fun observePlayWhenReady() {
@@ -139,6 +150,7 @@ class MainViewModel @Inject constructor(
 }
 
 data class MainState(
+    val isExpanded: Boolean = false,
     val playbackComponentInfo: ComponentInfo = ComponentInfo.empty(),
     val playWhenReady: Flow<Boolean> = emptyFlow(),
     val positionChanged: Flow<PlaybackPosition> = emptyFlow(),
