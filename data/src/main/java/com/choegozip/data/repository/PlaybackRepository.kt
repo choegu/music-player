@@ -19,6 +19,7 @@ import com.choegozip.domain.model.Media
 import com.choegozip.domain.model.ComponentInfo
 import com.choegozip.domain.model.PlayMedia
 import com.choegozip.domain.model.PlaybackPosition
+import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.guava.await
@@ -33,6 +34,7 @@ class PlaybackRepository @Inject constructor(
 ) {
 
     // TODO 클래스 초기화 된 경우 데이터스토어에 있는 문자열로 새로 생성
+    private lateinit var controllerFuture: ListenableFuture<MediaController>
     private lateinit var controller: MediaController
 
     // 재생 리스너들
@@ -50,17 +52,7 @@ class PlaybackRepository @Inject constructor(
      */
     suspend fun getPlaybackComponent(uiComponentInfo: ComponentInfo): ComponentInfo {
         // 기존 리스너 제거
-        withContext(Dispatchers.Main) {
-            // TODO 휴먼에러 발생 여지 크다... 컨트롤러 및 리스너 관리 클래스 추가하기
-            if (::controller.isInitialized) {
-                if (::playWhenReadyListener.isInitialized)
-                    controller.removeListener(playWhenReadyListener)
-                if (::positionChangedListener.isInitialized)
-                    controller.removeListener(positionChangedListener)
-                if (::mediaItemTransitionListener.isInitialized)
-                    controller.removeListener(mediaItemTransitionListener)
-            }
-        }
+        removeListeners()
 
         mediaControllerSharedPrefs.setUiComponent(uiComponentInfo)
 
@@ -72,11 +64,12 @@ class PlaybackRepository @Inject constructor(
 
         val sessionToken = SessionToken(context, playbackServiceComponent)
 
-        controller =
+        controllerFuture =
             MediaController.Builder(
                 context,
                 sessionToken,
-            ).buildAsync().await()
+            ).buildAsync()
+        controller = controllerFuture.await()
 
         return playbackComponentInfo
     }
@@ -221,12 +214,26 @@ class PlaybackRepository @Inject constructor(
     }
 
     /**
-     * 컨트롤러 종료
-     * 리스너 해제
-     * TODO
+     * 리스너 제거
      */
-    fun releaseController() {
-
+    suspend fun removeListeners() {
+        withContext(Dispatchers.Main) {
+            // TODO 휴먼에러 발생 여지 크다... 컨트롤러 및 리스너 관리 클래스 추가하기
+            if (::controller.isInitialized) {
+                if (::playWhenReadyListener.isInitialized)
+                    controller.removeListener(playWhenReadyListener)
+                if (::positionChangedListener.isInitialized)
+                    controller.removeListener(positionChangedListener)
+                if (::mediaItemTransitionListener.isInitialized)
+                    controller.removeListener(mediaItemTransitionListener)
+            }
+        }
     }
 
+    /**
+     * 컨트롤러 종료
+     */
+    fun releaseController() {
+        MediaController.releaseFuture(controllerFuture)
+    }
 }

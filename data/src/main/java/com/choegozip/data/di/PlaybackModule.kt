@@ -7,6 +7,7 @@ import com.choegozip.data.usecase.GetPlaybackPositionUseCaseImpl
 import com.choegozip.data.usecase.GetPositionChangedUseCaseImpl
 import com.choegozip.data.usecase.PlayMediaUseCaseImpl
 import com.choegozip.data.usecase.PlayOrPauseMediaUseCaseImpl
+import com.choegozip.data.usecase.ReleaseMediaControllerUseCaseImpl
 import com.choegozip.domain.usecase.GetMediaItemTransitionUseCase
 import com.choegozip.domain.usecase.GetPlayWhenReadyUseCase
 import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
@@ -14,6 +15,7 @@ import com.choegozip.domain.usecase.GetPlaybackPositionUseCase
 import com.choegozip.domain.usecase.GetPositionChangedUseCase
 import com.choegozip.domain.usecase.PlayMediaUseCase
 import com.choegozip.domain.usecase.PlayOrPauseMediaUseCase
+import com.choegozip.domain.usecase.ReleaseMediaControllerUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -42,4 +44,7 @@ abstract class PlaybackModule {
 
     @Binds
     abstract fun bindPlayOrPauseMediaUseCase(uc: PlayOrPauseMediaUseCaseImpl): PlayOrPauseMediaUseCase
+
+    @Binds
+    abstract fun bindReleaseMediaControllerUseCase(uc: ReleaseMediaControllerUseCaseImpl): ReleaseMediaControllerUseCase
 }

@@ -11,6 +11,7 @@ import com.choegozip.domain.usecase.GetPlayWhenReadyUseCase
 import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
 import com.choegozip.domain.usecase.GetPlaybackPositionUseCase
 import com.choegozip.domain.usecase.GetPositionChangedUseCase
+import com.choegozip.domain.usecase.ReleaseMediaControllerUseCase
 import com.choegozip.presentation.model.MediaUiModel
 import com.choegozip.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,7 @@ class MainViewModel @Inject constructor(
     private val getPlayWhenReadyUseCase: GetPlayWhenReadyUseCase,
     private val getPositionChangedUseCase: GetPositionChangedUseCase,
     private val getMediaItemTransitionUseCase: GetMediaItemTransitionUseCase,
+    private val releaseMediaControllerUseCase: ReleaseMediaControllerUseCase,
 ) : ViewModel(), ContainerHost<MainState, MainSideEffect> {
 
     override val container: Container<MainState, MainSideEffect> = container(
@@ -126,6 +128,13 @@ class MainViewModel @Inject constructor(
                 mediaItemTransition = mediaItemTransitionFlow.map { it.toUiModel() },
             )
         }
+    }
+
+    /**
+     * 미디어 플레이어 종료
+     */
+    fun releaseMediaController() = intent {
+        releaseMediaControllerUseCase().getOrThrow()
     }
 }
 

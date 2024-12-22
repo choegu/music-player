@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                     // TODO 예외 처리
 
                 } finally {
-                    // TODO 릴리즈 컨트롤러
+                    mainViewModel.releaseMediaController()
                 }
             }
         }
@@ -105,13 +105,6 @@ class MainActivity : ComponentActivity() {
                     }
             }
         }
-
-        // 주기적으로 현재 미디어 상태 요청
-//        lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-//                mainViewModel.startGetPlaybackState()
-//            }
-//        }
 
         setContent {
             MusicPlayerTheme {
