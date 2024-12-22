@@ -18,34 +18,3 @@ fun Media.toUiModel(): MediaUiModel {
         albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
     )
 }
-
-//fun Media.toUiModel(): MediaUiModel {
-//    // 음악 파일의 URI
-//    val contentUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id.toString())
-//    // 앨범 아트 URI
-//    val albumArtUri = Uri.parse("content://media/external/audio/albumart/$albumId")
-//    // MediaItem 생성
-//    val mediaItem = MediaItem.Builder()
-//        .setMediaId(id.toString())
-//        .setUri(contentUri)
-//        .setMediaMetadata(
-//            MediaMetadata.Builder()
-//                .setTitle(title)
-//                .setArtist(artist)
-//                .setAlbumTitle(albumTitle)
-//                .setArtworkUri(albumArtUri)
-//                .setDescription(displayName)
-//                .setExtras(
-//                    Bundle().apply {
-//                        putString("sourceUri", data)
-//                        putLong("duration", duration)
-//                    }
-//                )
-//                .build()
-//        )
-//        .build()
-//
-//    return MediaUiModel(
-//        mediaItem = mediaItem
-//    )
-//}
