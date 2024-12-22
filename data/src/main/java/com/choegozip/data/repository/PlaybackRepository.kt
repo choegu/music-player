@@ -152,7 +152,7 @@ class PlaybackRepository @Inject constructor(
     }
 
     /**
-     * 미디어 재생하기
+     * 특정 미디어 재생하기
      */
     suspend fun playMedia(playMedia: PlayMedia, mediaList: List<Media>) {
         // 미디어 아이템 변환
@@ -198,6 +198,21 @@ class PlaybackRepository @Inject constructor(
                 shuffleModeEnabled = playMedia.shuffleModeEnabled
                 prepare()
                 play()
+            }
+        }
+    }
+
+    /**
+     * 현재 미디어 재생 또는 일시정지
+     */
+    suspend fun playOrPauseMedia() {
+        withContext(Dispatchers.Main) {
+            controller.run {
+                if (playWhenReady) {
+                    pause()
+                } else {
+                    play()
+                }
             }
         }
     }

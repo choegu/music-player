@@ -17,12 +17,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.ui.PlayerView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
 import com.choegozip.presentation.main.MainViewModel
+import com.choegozip.presentation.model.MediaUiModel
+import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(UnstableApi::class)
@@ -33,6 +36,7 @@ fun BigPlayerScreen(
     mainPlayerView: PlayerView,
     onClickFold: () -> Unit,
 ) {
+    val mainState = mainViewModel.collectAsState().value
     val context = LocalContext.current
 
     // 사이드이펙트 수집
@@ -51,6 +55,7 @@ fun BigPlayerScreen(
 
     BigPlayerScreen(
         mainPlayerView = mainPlayerView,
+        mediaUiModel = mainState.mediaItemTransition.collectAsState(initial = MediaUiModel.empty()).value,
         onClickFold = onClickFold,
         onClickVolume = viewModel::onClickVolume,
     )
@@ -59,6 +64,7 @@ fun BigPlayerScreen(
 @Composable
 fun BigPlayerScreen(
     mainPlayerView: PlayerView,
+    mediaUiModel: MediaUiModel,
     onClickFold: () -> Unit,
     onClickVolume: () -> Unit,
 ) {
@@ -112,14 +118,18 @@ fun BigPlayerScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                text = "Build the Levees",
+                                text = mediaUiModel.mediaTitle,
                                 style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             Text(
-                                text = "Daniel Duke — Brother",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.secondary
+                                text = "${mediaUiModel.artist} - ${mediaUiModel.albumTitle}",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.secondary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
 

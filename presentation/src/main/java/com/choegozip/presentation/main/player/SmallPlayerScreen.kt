@@ -65,7 +65,7 @@ fun SmallPlayerScreen(
         playbackPosition = mainState.positionChanged.collectAsState(initial = PlaybackPosition.empty()).value,
         mediaUiModel = mainState.mediaItemTransition.collectAsState(initial = MediaUiModel.empty()).value,
         onClickSpread = onClickSpread,
-        onPlayPauseClicked = {  },
+        onPlayPauseClicked = viewModel::playOrPause,
     )
 }
 
@@ -81,12 +81,9 @@ private fun SmallPlayerScreen(
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-//            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .offset(y = (-8).dp), // 떠있는 효과
-//            .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp)),
-//        shape = RoundedCornerShape(16.dp),
-//        color = MaterialTheme.colorScheme.surface
+            .offset(y = (-8).dp),
     ) {
+        // TODO 상단 여백이 좁은데 알맞게 수정 필요
         Column(
             modifier = Modifier
                 .clickable(
@@ -127,8 +124,10 @@ private fun SmallPlayerScreen(
 
                 // 텍스트 정보
                 Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
                         text = mediaUiModel.mediaTitle,

@@ -1,6 +1,7 @@
 package com.choegozip.presentation.main.player
 
 import androidx.lifecycle.ViewModel
+import com.choegozip.domain.usecase.PlayOrPauseMediaUseCase
 import com.choegozip.presentation.model.AlbumUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SmallPlayerViewModel @Inject constructor(
+    private val playOrPauseMediaUseCase: PlayOrPauseMediaUseCase
 ) : ViewModel(), ContainerHost<Unit, SmallPlayerSideEffect> {
 
     override val container: Container<Unit, SmallPlayerSideEffect> = container(
@@ -24,6 +26,12 @@ class SmallPlayerViewModel @Inject constructor(
         }
     )
 
+    /**
+     * play or pause
+     */
+    fun playOrPause() = intent {
+        playOrPauseMediaUseCase().getOrThrow()
+    }
 }
 
 sealed interface SmallPlayerSideEffect {
