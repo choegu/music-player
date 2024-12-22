@@ -4,6 +4,7 @@ import android.net.Uri
 import com.choegozip.domain.model.Media
 
 data class MediaUiModel (
+    val id: Long,
     val albumTitle: String,
     val artist: String,
     val mediaTitle: String,
@@ -12,6 +13,7 @@ data class MediaUiModel (
     companion object {
         fun empty(): MediaUiModel {
             return MediaUiModel(
+                id = -1,
                 albumTitle = "",
                 artist = "",
                 mediaTitle = "",
@@ -19,10 +21,16 @@ data class MediaUiModel (
             )
         }
     }
+
+    /**
+     * 비어있는 미디어인지 확인
+     */
+    fun isEmpty() = id < 0
 }
 
 fun Media.toUiModel(): MediaUiModel {
     return MediaUiModel(
+        id = id,
         albumTitle = albumTitle,
         artist = artist,
         mediaTitle = title,

@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -103,58 +104,78 @@ private fun SmallPlayerScreen(
                 trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
             )
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Play / Pause 버튼
-                IconButton(onClick = onPlayPauseClicked) {
-                    // TODO pause 아이콘 어울리는 걸로 변경
-                    Icon(
-                        imageVector = if (playerWhenReady) Icons.Default.Menu else Icons.Default.PlayArrow,
-                        contentDescription = "Play/Pause",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(48.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // 텍스트 정보
+            if (mediaUiModel.isEmpty()) {
+                // TODO 문자열 리소스화
                 Column(
                     modifier = Modifier
-                        .weight(1f),
+                        .fillMaxWidth()
+                        .height(64.dp),
                     verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = mediaUiModel.mediaTitle,
+                        text = "재생중인 노래가 없습니다.",
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        text = "${mediaUiModel.artist} - ${mediaUiModel.albumTitle}",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.secondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Play / Pause 버튼
+                    IconButton(onClick = onPlayPauseClicked) {
+                        // TODO pause 아이콘 어울리는 걸로 변경
+                        Icon(
+                            imageVector = if (playerWhenReady) Icons.Default.Menu else Icons.Default.PlayArrow,
+                            contentDescription = "Play/Pause",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(48.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    // 텍스트 정보
+                    Column(
+                        modifier = Modifier
+                            .weight(1f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = mediaUiModel.mediaTitle,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = "${mediaUiModel.artist} - ${mediaUiModel.albumTitle}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    // 앨범 아트
+                    Image(
+                        painter = rememberAsyncImagePainter(mediaUiModel.albumArtUri),
+                        contentDescription = "Album Art",
+                        modifier = Modifier
+                            .size(48.dp),
+                        contentScale = ContentScale.Crop
                     )
                 }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                // 앨범 아트
-                Image(
-                    painter = rememberAsyncImagePainter(mediaUiModel.albumArtUri),
-                    contentDescription = "Album Art",
-                    modifier = Modifier
-                        .size(48.dp),
-                    contentScale = ContentScale.Crop
-                )
             }
         }
     }

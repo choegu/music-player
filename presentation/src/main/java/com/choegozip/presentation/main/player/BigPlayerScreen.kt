@@ -5,6 +5,7 @@ import android.media.AudioManager
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -91,17 +92,14 @@ fun BigPlayerScreen(
             Surface {
                 Column {
                     // 상단바
-                    Box(
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(
-                                min = 64.dp
-                            )
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
                             modifier = Modifier
-                                .size(64.dp)
-                                .align(Alignment.CenterStart),
+                                .size(64.dp),
                             onClick = onClickFold
                         ) {
                             Icon(
@@ -113,30 +111,40 @@ fun BigPlayerScreen(
 
                         Column(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                                .weight(1f),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            Text(
-                                text = mediaUiModel.mediaTitle,
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.primary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                text = "${mediaUiModel.artist} - ${mediaUiModel.albumTitle}",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.secondary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                            if (mediaUiModel.isEmpty()) {
+                                // TODO 문자열 리소스화
+                                Text(
+                                    text = "재생중인 노래가 없습니다.",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            } else {
+                                Text(
+                                    text = mediaUiModel.mediaTitle,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = "${mediaUiModel.artist} - ${mediaUiModel.albumTitle}",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
 
                         IconButton(
                             modifier = Modifier
-                                .size(64.dp)
-                                .align(Alignment.CenterEnd),
+                                .size(64.dp),
                             onClick = {
                                 Log.d("!!!!!", "onclick volume")
                                 onClickVolume()
