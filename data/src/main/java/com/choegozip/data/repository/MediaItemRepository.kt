@@ -70,7 +70,6 @@ class MediaItemRepository @Inject constructor(
                 val mediaItem = Media(
                     id = id,
                     displayName = displayName,
-                    data = data,
                     artist = artist,
                     albumTitle = albumTitle,
                     albumId = albumId,

@@ -107,11 +107,11 @@ class MainActivity : ComponentActivity() {
         }
 
         // 주기적으로 현재 미디어 상태 요청
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                mainViewModel.startGetPlaybackState()
-            }
-        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+//                mainViewModel.startGetPlaybackState()
+//            }
+//        }
 
         setContent {
             MusicPlayerTheme {

@@ -1,18 +1,28 @@
 package com.choegozip.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.choegozip.domain.model.ComponentInfo
-import com.choegozip.domain.model.PlaybackState
-import com.choegozip.domain.model.PlayerEvent
+import com.choegozip.domain.model.Media
+import com.choegozip.domain.model.PlaybackPosition
+import com.choegozip.domain.usecase.GetMediaItemTransitionUseCase
+import com.choegozip.domain.usecase.GetPlayWhenReadyUseCase
 import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
-import com.choegozip.domain.usecase.GetPlaybackStateUseCase
-import com.choegozip.domain.usecase.GetPlayerEventsUseCase
+import com.choegozip.domain.usecase.GetPlaybackPositionUseCase
+import com.choegozip.domain.usecase.GetPositionChangedUseCase
+import com.choegozip.presentation.model.MediaUiModel
+import com.choegozip.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -24,8 +34,10 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getPlaybackComponentUseCase: GetPlaybackComponentUseCase,
-    private val getPlaybackStateUseCase: GetPlaybackStateUseCase,
-    private val getPlayerEventsUseCase: GetPlayerEventsUseCase,
+    private val getPlaybackPositionUseCase: GetPlaybackPositionUseCase,
+    private val getPlayWhenReadyUseCase: GetPlayWhenReadyUseCase,
+    private val getPositionChangedUseCase: GetPositionChangedUseCase,
+    private val getMediaItemTransitionUseCase: GetMediaItemTransitionUseCase,
 ) : ViewModel(), ContainerHost<MainState, MainSideEffect> {
 
     override val container: Container<MainState, MainSideEffect> = container(
@@ -37,9 +49,62 @@ class MainViewModel @Inject constructor(
         }
     )
 
-    // 플레이어 이벤트 플로우
-    private val _playerEventsFlow = MutableSharedFlow<PlayerEvent>(replay = 1)
-    private val playerEventsFlow: Flow<PlayerEvent> = _playerEventsFlow
+    init {
+        observePlayWhenReady()
+    }
+
+    // PlayWhenReady 플로우
+    private val _playWhenReadyFlow = MutableSharedFlow<Boolean>(replay = 1)
+    private val playWhenReadyFlow: Flow<Boolean> = _playWhenReadyFlow
+
+    // PositionChanged 플로우
+    private val _positionChangedFlow = MutableSharedFlow<PlaybackPosition>(replay = 1)
+    private val positionChangedFlow: Flow<PlaybackPosition> = _positionChangedFlow
+
+    // MediaItemTransition 플로우
+    private val _mediaItemTransitionFlow = MutableSharedFlow<Media>(replay = 1)
+    private val mediaItemTransitionFlow: Flow<Media> = _mediaItemTransitionFlow
+
+    // Position update job
+    private var positionUpdateJob: Job? = null
+
+    /**
+     * 재생 상태 관찰 및 코루틴 관리
+     */
+    private fun observePlayWhenReady() {
+        viewModelScope.launch {
+            playWhenReadyFlow.collect { playWhenReady ->
+                if (playWhenReady) {
+                    startPositionUpdate()
+                } else {
+                    stopPositionUpdate()
+                }
+            }
+        }
+    }
+
+    /**
+     * 포지션 업데이트 시작
+     */
+    private fun startPositionUpdate() {
+        if (positionUpdateJob?.isActive == true) return
+
+        positionUpdateJob = viewModelScope.launch {
+            while (isActive) {
+                delay(500)
+                val playbackPosition = getPlaybackPositionUseCase().getOrThrow()
+                _positionChangedFlow.tryEmit(playbackPosition)
+            }
+        }
+    }
+
+    /**
+     * 포지션 업데이트 종료
+     */
+    private fun stopPositionUpdate() {
+        positionUpdateJob?.cancel()
+        positionUpdateJob = null
+    }
 
     /**
      * 재생 컴포넌트 정보 가져오기
@@ -49,44 +114,26 @@ class MainViewModel @Inject constructor(
         val playbackComponentInfo = getPlaybackComponentUseCase(uiComponentInfo).getOrThrow()
 
         // 플레이어 이벤트 리스너 붙이기
-        getPlayerEventsUseCase(_playerEventsFlow).getOrThrow()
+        getPlayWhenReadyUseCase(_playWhenReadyFlow).getOrThrow()
+        getPositionChangedUseCase(_positionChangedFlow).getOrThrow()
+        getMediaItemTransitionUseCase(_mediaItemTransitionFlow).getOrThrow()
 
         reduce {
             state.copy(
                 playbackComponentInfo = playbackComponentInfo,
-                playerEventFlow = playerEventsFlow,
+                playWhenReady = playWhenReadyFlow,
+                positionChanged = positionChangedFlow,
+                mediaItemTransition = mediaItemTransitionFlow.map { it.toUiModel() },
             )
-        }
-    }
-
-    /**
-     * 미디어 상태 수집 시작
-     */
-    fun startGetPlaybackState() = intent {
-        while (true) {
-            // TODO 현재 재생중일 때만 동작하도록 변경
-
-            // 반복적으로 수집
-            delay(1000)
-
-            val playbackState = getPlaybackStateUseCase().getOrThrow()
-
-            reduce {
-                state.copy(
-                    playbackState = playbackState
-                )
-            }
         }
     }
 }
 
 data class MainState(
-    // 디바이스 재생 컴포넌트 정보
     val playbackComponentInfo: ComponentInfo = ComponentInfo.empty(),
-    // 플레이어 이벤트
-    val playerEventFlow: Flow<PlayerEvent> = emptyFlow(),
-    // 재생 상태
-    val playbackState: PlaybackState = PlaybackState.empty(),
+    val playWhenReady: Flow<Boolean> = emptyFlow(),
+    val positionChanged: Flow<PlaybackPosition> = emptyFlow(),
+    val mediaItemTransition: Flow<MediaUiModel> = emptyFlow(),
 )
 
 sealed interface MainSideEffect {

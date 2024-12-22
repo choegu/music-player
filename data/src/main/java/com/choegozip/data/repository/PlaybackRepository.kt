@@ -16,10 +16,8 @@ import com.choegozip.data.service.PlaybackService
 import com.choegozip.domain.model.Media
 import com.choegozip.domain.model.ComponentInfo
 import com.choegozip.domain.model.PlayMedia
-import com.choegozip.domain.model.PlaybackState
-import com.choegozip.domain.model.PlayerEvent
+import com.choegozip.domain.model.PlaybackPosition
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.withContext
@@ -37,7 +35,10 @@ class PlaybackRepository @Inject constructor(
     // TODO 클래스 초기화 된 경우 데이터스토어에 있는 문자열로 새로 생성
     private lateinit var controller: MediaController
 
-    private lateinit var controllerListener: Player.Listener
+    // 재생 리스너들
+    private lateinit var playWhenReadyListener: Player.Listener
+    private lateinit var positionChangedListener: Player.Listener
+    private lateinit var mediaItemTransitionListener: Player.Listener
 
     /**
      * 프레젠테이션 모듈 UI 정보
@@ -48,6 +49,18 @@ class PlaybackRepository @Inject constructor(
      * 재생 컴포넌트 정보 가져오기
      */
     suspend fun getPlaybackComponent(uiComponentInfo: ComponentInfo): ComponentInfo {
+        // 기존 리스너 제거
+        withContext(Dispatchers.Main) {
+            // TODO 휴먼에러 발생 여지 크다... 컨트롤러 및 리스너 관리 클래스 추가하기
+            if (::controller.isInitialized) {
+                if (::playWhenReadyListener.isInitialized)
+                    controller.removeListener(playWhenReadyListener)
+                if (::positionChangedListener.isInitialized)
+                    controller.removeListener(positionChangedListener)
+                if (::mediaItemTransitionListener.isInitialized)
+                    controller.removeListener(mediaItemTransitionListener)
+            }
+        }
 
         this.uiComponentInfo = uiComponentInfo
 
@@ -68,38 +81,70 @@ class PlaybackRepository @Inject constructor(
         return playbackComponentInfo
     }
 
-    fun getPlayerEvents(flow: MutableSharedFlow<PlayerEvent>) {
-        Log.d("!!!!!", "start get events")
-
-        // 기존 리스너 제거
-        if (::controllerListener.isInitialized) {
-            controller.removeListener(controllerListener)
+    /**
+     * 재생 상태 가져오기
+     */
+    fun getPlayWhenReady(flow: MutableSharedFlow<Boolean>) {
+        playWhenReadyListener = object : Player.Listener {
+            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                Log.d("PlayerState", "PlayWhenReady changed: $playWhenReady, Reason: $reason")
+                flow.tryEmit(playWhenReady)
+            }
         }
+        controller.addListener(playWhenReadyListener)
+    }
 
-        // 인입된 플로우로 리스너 업데이트
-        controllerListener = object : Player.Listener {
-            override fun onEvents(player: Player, events: Player.Events) {
-                Log.d("!!!!!", "events : $events")
-
-                // TODO 이벤트 체크하여 리스트에 담는 작업
+    /**
+     * 재생 포지션 변경 시점 가져오기
+     */
+    fun getPositionChanged(flow: MutableSharedFlow<PlaybackPosition>) {
+        positionChangedListener = object : Player.Listener {
+            override fun onPositionDiscontinuity(
+                oldPosition: Player.PositionInfo,
+                newPosition: Player.PositionInfo,
+                reason: Int
+            ) {
+                super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                 flow.tryEmit(
-                    PlayerEvent(
-                        eventList = listOf(events.hashCode())
+                    PlaybackPosition(
+                        duration = controller.duration,
+                        currentPosition = controller.currentPosition
                     )
                 )
             }
         }
-
-        // 새 리스너 추가
-        controller.addListener(controllerListener)
+        controller.addListener(positionChangedListener)
     }
 
     /**
-     * 재생 상태 가져오기
+     * 미디어 변경 가져오기
      */
-    suspend fun getPlaybackState(): PlaybackState {
+    fun getMediaItemTransition(flow: MutableSharedFlow<Media>) {
+        mediaItemTransitionListener = object : Player.Listener {
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                val metadata = mediaItem?.mediaMetadata
+                val extras = metadata?.extras
+                val media = Media(
+                    id = mediaItem?.mediaId?.toLongOrNull() ?: -1,
+                    displayName = metadata?.description.toString(),
+                    artist = metadata?.artist.toString(),
+                    albumTitle = metadata?.albumTitle.toString(),
+                    albumId = extras?.getLong("albumId") ?: -1,
+                    duration = extras?.getLong("duration") ?: -1,
+                    title = metadata?.title.toString()
+                )
+                flow.tryEmit(media)
+            }
+        }
+        controller.addListener(mediaItemTransitionListener)
+    }
+
+    /**
+     * 재생 포지션 가져오기
+     */
+    suspend fun getPlaybackPosition(): PlaybackPosition {
         return withContext(Dispatchers.Main) {
-            PlaybackState(
+            PlaybackPosition(
                 duration = controller.duration,
                 currentPosition = controller.currentPosition
             )
@@ -129,7 +174,7 @@ class PlaybackRepository @Inject constructor(
                         .setDescription(it.displayName)
                         .setExtras(
                             Bundle().apply {
-                                putString("sourceUri", it.data)
+                                putLong("albumId", it.albumId)
                                 putLong("duration", it.duration)
                             }
                         )

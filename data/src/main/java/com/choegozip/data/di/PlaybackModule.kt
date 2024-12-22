@@ -1,12 +1,16 @@
 package com.choegozip.data.di
 
+import com.choegozip.data.usecase.GetMediaItemTransitionUseCaseImpl
+import com.choegozip.data.usecase.GetPlayWhenReadyUseCaseImpl
 import com.choegozip.data.usecase.GetPlaybackComponentUseCaseImpl
-import com.choegozip.data.usecase.GetPlaybackStateUseCaseImpl
-import com.choegozip.data.usecase.GetPlayerEventsUseCaseImpl
+import com.choegozip.data.usecase.GetPlaybackPositionUseCaseImpl
+import com.choegozip.data.usecase.GetPositionChangedUseCaseImpl
 import com.choegozip.data.usecase.PlayMediaUseCaseImpl
+import com.choegozip.domain.usecase.GetMediaItemTransitionUseCase
+import com.choegozip.domain.usecase.GetPlayWhenReadyUseCase
 import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
-import com.choegozip.domain.usecase.GetPlaybackStateUseCase
-import com.choegozip.domain.usecase.GetPlayerEventsUseCase
+import com.choegozip.domain.usecase.GetPlaybackPositionUseCase
+import com.choegozip.domain.usecase.GetPositionChangedUseCase
 import com.choegozip.domain.usecase.PlayMediaUseCase
 import dagger.Binds
 import dagger.Module
@@ -23,8 +27,14 @@ abstract class PlaybackModule {
     abstract fun bindPlayMediaUseCaseUseCase(uc: PlayMediaUseCaseImpl): PlayMediaUseCase
 
     @Binds
-    abstract fun bindGetPlaybackStateUseCase(uc: GetPlaybackStateUseCaseImpl): GetPlaybackStateUseCase
+    abstract fun bindGetPlaybackStateUseCase(uc: GetPlaybackPositionUseCaseImpl): GetPlaybackPositionUseCase
 
     @Binds
-    abstract fun bindGetPlayerEventsUseCase(uc: GetPlayerEventsUseCaseImpl): GetPlayerEventsUseCase
+    abstract fun bindGetPlayWhenReadyUseCase(uc: GetPlayWhenReadyUseCaseImpl): GetPlayWhenReadyUseCase
+
+    @Binds
+    abstract fun bindGetPositionChangedUseCase(uc: GetPositionChangedUseCaseImpl): GetPositionChangedUseCase
+
+    @Binds
+    abstract fun bindGetMediaItemTransitionUseCase(uc: GetMediaItemTransitionUseCaseImpl): GetMediaItemTransitionUseCase
 }

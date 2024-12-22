@@ -8,7 +8,18 @@ data class MediaUiModel (
     val artist: String,
     val mediaTitle: String,
     val albumArtUri: Uri,
-)
+) {
+    companion object {
+        fun empty(): MediaUiModel {
+            return MediaUiModel(
+                albumTitle = "",
+                artist = "",
+                mediaTitle = "",
+                albumArtUri = Uri.EMPTY
+            )
+        }
+    }
+}
 
 fun Media.toUiModel(): MediaUiModel {
     return MediaUiModel(
