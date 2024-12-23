@@ -77,6 +77,7 @@ dependencies {
     // Unit Test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation("com.google.dagger:hilt-android-testing:2.48")
 
     // Android Test
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
