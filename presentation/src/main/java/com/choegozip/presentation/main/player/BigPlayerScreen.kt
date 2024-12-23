@@ -63,12 +63,13 @@ fun BigPlayerScreen(
 }
 
 @Composable
-fun BigPlayerScreen(
+private fun BigPlayerScreen(
     mainPlayerView: PlayerView,
     mediaUiModel: MediaUiModel,
     onClickFold: () -> Unit,
     onClickVolume: () -> Unit,
 ) {
+    // TODO landscape 대응하기
     Surface(
         color = Color.Transparent
     ) {

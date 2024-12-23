@@ -69,6 +69,7 @@ private fun AlbumScreen(
     mediaList: List<MediaUiModel>,
     onPlayMedia: (PlayMedia) -> Unit
 ) {
+    // TODO landscape 대응하기
     Surface {
         Column(
             modifier = Modifier
