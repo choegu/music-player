@@ -1,5 +1,6 @@
 package com.choegozip.presentation.main.library
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
@@ -13,12 +14,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import androidx.media3.common.util.UnstableApi
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.AlbumUiModel
+import com.choegozip.presentation.theme.MusicPlayerTheme
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
@@ -86,4 +89,23 @@ private fun LibraryScreen(
     }
 }
 
-// TODO preview
+@Preview
+@Composable
+fun LibraryScreenTest(
+    isExpanded: Boolean = false,
+    toggleExpand: () -> Unit = {},
+    albumList: List<AlbumUiModel> = listOf(
+        AlbumUiModel(title = "에피소드", artist = "이무진", albumId = 10000001, albumArtUri = Uri.EMPTY),
+        AlbumUiModel(title = "아파트", artist = "로제", albumId = 10000002, albumArtUri = Uri.EMPTY),
+    ),
+    onAlbumClick: (AlbumUiModel) -> Unit = {},
+) {
+    MusicPlayerTheme {
+        LibraryScreen(
+            isExpanded = isExpanded,
+            toggleExpand = toggleExpand,
+            albumList = albumList,
+            onAlbumClick = onAlbumClick,
+        )
+    }
+}
