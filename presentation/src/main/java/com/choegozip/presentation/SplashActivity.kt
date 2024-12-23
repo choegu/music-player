@@ -75,7 +75,7 @@ class SplashActivity: ComponentActivity() {
                     .setPermissions(*permissionList.toTypedArray())
                     .check()
 
-                delay(500)
+                delay(1000)
 
                 if (permissionResult.isGranted) {
                     finish()
