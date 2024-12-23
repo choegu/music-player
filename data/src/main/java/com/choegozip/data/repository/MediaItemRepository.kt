@@ -2,8 +2,8 @@ package com.choegozip.data.repository
 
 import android.content.Context
 import android.provider.MediaStore
-import com.choegozip.domain.model.Album
-import com.choegozip.domain.model.Media
+import com.choegozip.domain.model.media.Album
+import com.choegozip.domain.model.media.Media
 import javax.inject.Inject
 import javax.inject.Singleton
 

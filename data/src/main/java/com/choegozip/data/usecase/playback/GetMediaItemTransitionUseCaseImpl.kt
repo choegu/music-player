@@ -1,8 +1,8 @@
-package com.choegozip.data.usecase
+package com.choegozip.data.usecase.playback
 
 import com.choegozip.data.repository.PlaybackRepository
-import com.choegozip.domain.model.Media
-import com.choegozip.domain.usecase.GetMediaItemTransitionUseCase
+import com.choegozip.domain.model.media.Media
+import com.choegozip.domain.usecase.playback.GetMediaItemTransitionUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 

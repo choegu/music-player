@@ -1,4 +1,4 @@
-package com.choegozip.domain.model
+package com.choegozip.domain.model.media
 
 data class Media(
     val id:Long,

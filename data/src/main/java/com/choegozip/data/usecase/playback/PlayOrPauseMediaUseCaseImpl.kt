@@ -1,7 +1,7 @@
-package com.choegozip.data.usecase
+package com.choegozip.data.usecase.playback
 
 import com.choegozip.data.repository.PlaybackRepository
-import com.choegozip.domain.usecase.PlayOrPauseMediaUseCase
+import com.choegozip.domain.usecase.playback.PlayOrPauseMediaUseCase
 import javax.inject.Inject
 
 class PlayOrPauseMediaUseCaseImpl @Inject constructor(

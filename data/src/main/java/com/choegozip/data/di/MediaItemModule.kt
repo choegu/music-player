@@ -1,9 +1,9 @@
 package com.choegozip.data.di
 
-import com.choegozip.data.usecase.GetAlbumListUseCaseImpl
-import com.choegozip.data.usecase.GetMediaListUseCaseImpl
-import com.choegozip.domain.usecase.GetAlbumListUseCase
-import com.choegozip.domain.usecase.GetMediaListUseCase
+import com.choegozip.data.usecase.media.GetAlbumListUseCaseImpl
+import com.choegozip.data.usecase.media.GetMediaListUseCaseImpl
+import com.choegozip.domain.usecase.media.GetAlbumListUseCase
+import com.choegozip.domain.usecase.media.GetMediaListUseCase
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

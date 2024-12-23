@@ -1,17 +1,16 @@
 package com.choegozip.presentation.main
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.choegozip.domain.model.ComponentInfo
-import com.choegozip.domain.model.Media
-import com.choegozip.domain.model.PlaybackPosition
-import com.choegozip.domain.usecase.GetMediaItemTransitionUseCase
-import com.choegozip.domain.usecase.GetPlayWhenReadyUseCase
-import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
-import com.choegozip.domain.usecase.GetPlaybackPositionUseCase
-import com.choegozip.domain.usecase.GetPositionChangedUseCase
-import com.choegozip.domain.usecase.ReleaseMediaControllerUseCase
+import com.choegozip.domain.model.media.Media
+import com.choegozip.domain.model.playback.PlaybackPosition
+import com.choegozip.domain.usecase.playback.GetMediaItemTransitionUseCase
+import com.choegozip.domain.usecase.playback.GetPlayWhenReadyUseCase
+import com.choegozip.domain.usecase.playback.GetPlaybackComponentUseCase
+import com.choegozip.domain.usecase.playback.GetPlaybackPositionUseCase
+import com.choegozip.domain.usecase.playback.GetPositionChangedUseCase
+import com.choegozip.domain.usecase.playback.ReleaseMediaControllerUseCase
 import com.choegozip.presentation.model.MediaUiModel
 import com.choegozip.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel

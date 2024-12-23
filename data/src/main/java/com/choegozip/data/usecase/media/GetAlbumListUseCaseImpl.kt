@@ -1,8 +1,8 @@
-package com.choegozip.data.usecase
+package com.choegozip.data.usecase.media
 
 import com.choegozip.data.repository.MediaItemRepository
-import com.choegozip.domain.model.Album
-import com.choegozip.domain.usecase.GetAlbumListUseCase
+import com.choegozip.domain.model.media.Album
+import com.choegozip.domain.usecase.media.GetAlbumListUseCase
 import javax.inject.Inject
 
 class GetAlbumListUseCaseImpl @Inject constructor(

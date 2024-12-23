@@ -15,10 +15,10 @@ import androidx.media3.session.SessionToken
 import com.choegozip.data.model.toDomainModel
 import com.choegozip.data.preference.MediaControllerSharedPrefs
 import com.choegozip.data.service.PlaybackService
-import com.choegozip.domain.model.Media
+import com.choegozip.domain.model.media.Media
 import com.choegozip.domain.model.ComponentInfo
-import com.choegozip.domain.model.PlayMedia
-import com.choegozip.domain.model.PlaybackPosition
+import com.choegozip.domain.model.playback.PlayMedia
+import com.choegozip.domain.model.playback.PlaybackPosition
 import com.google.common.util.concurrent.ListenableFuture
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

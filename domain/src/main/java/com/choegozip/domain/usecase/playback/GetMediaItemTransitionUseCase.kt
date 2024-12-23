@@ -1,6 +1,6 @@
-package com.choegozip.domain.usecase
+package com.choegozip.domain.usecase.playback
 
-import com.choegozip.domain.model.Media
+import com.choegozip.domain.model.media.Media
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 interface GetMediaItemTransitionUseCase {

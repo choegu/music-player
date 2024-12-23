@@ -1,9 +1,9 @@
-package com.choegozip.data.usecase
+package com.choegozip.data.usecase.playback
 
 import com.choegozip.data.repository.PlaybackRepository
-import com.choegozip.domain.model.PlayMedia
-import com.choegozip.domain.usecase.GetMediaListUseCase
-import com.choegozip.domain.usecase.PlayMediaUseCase
+import com.choegozip.domain.model.playback.PlayMedia
+import com.choegozip.domain.usecase.media.GetMediaListUseCase
+import com.choegozip.domain.usecase.playback.PlayMediaUseCase
 import javax.inject.Inject
 
 class PlayMediaUseCaseImpl @Inject constructor(

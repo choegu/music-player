@@ -1,7 +1,7 @@
 package com.choegozip.presentation.model
 
 import android.net.Uri
-import com.choegozip.domain.model.Media
+import com.choegozip.domain.model.media.Media
 
 data class MediaUiModel (
     val id: Long,

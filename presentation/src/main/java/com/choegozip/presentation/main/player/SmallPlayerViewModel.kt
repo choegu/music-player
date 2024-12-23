@@ -1,8 +1,7 @@
 package com.choegozip.presentation.main.player
 
 import androidx.lifecycle.ViewModel
-import com.choegozip.domain.usecase.PlayOrPauseMediaUseCase
-import com.choegozip.presentation.model.AlbumUiModel
+import com.choegozip.domain.usecase.playback.PlayOrPauseMediaUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import org.orbitmvi.orbit.Container

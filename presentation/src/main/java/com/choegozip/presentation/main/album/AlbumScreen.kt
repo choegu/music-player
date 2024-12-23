@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
-import com.choegozip.domain.model.PlayMedia
+import com.choegozip.domain.model.playback.PlayMedia
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState

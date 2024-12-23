@@ -1,8 +1,7 @@
 package com.choegozip.presentation.main.library
 
 import androidx.lifecycle.ViewModel
-import com.choegozip.domain.usecase.GetAlbumListUseCase
-import com.choegozip.presentation.main.MainSideEffect
+import com.choegozip.domain.usecase.media.GetAlbumListUseCase
 import com.choegozip.presentation.model.AlbumUiModel
 import com.choegozip.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel

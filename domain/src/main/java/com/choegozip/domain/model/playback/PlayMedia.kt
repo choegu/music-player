@@ -1,4 +1,4 @@
-package com.choegozip.domain.model
+package com.choegozip.domain.model.playback
 
 data class PlayMedia (
     val albumId: Long,

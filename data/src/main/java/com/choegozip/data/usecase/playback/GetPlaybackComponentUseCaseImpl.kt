@@ -1,8 +1,8 @@
-package com.choegozip.data.usecase
+package com.choegozip.data.usecase.playback
 
 import com.choegozip.data.repository.PlaybackRepository
 import com.choegozip.domain.model.ComponentInfo
-import com.choegozip.domain.usecase.GetPlaybackComponentUseCase
+import com.choegozip.domain.usecase.playback.GetPlaybackComponentUseCase
 import javax.inject.Inject
 
 class GetPlaybackComponentUseCaseImpl @Inject constructor(

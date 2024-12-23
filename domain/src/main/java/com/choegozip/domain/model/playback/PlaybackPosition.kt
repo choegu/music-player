@@ -1,4 +1,4 @@
-package com.choegozip.domain.model
+package com.choegozip.domain.model.playback
 
 data class PlaybackPosition (
     val duration: Long,

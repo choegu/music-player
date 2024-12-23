@@ -1,7 +1,7 @@
 package com.choegozip.presentation.model
 
 import android.net.Uri
-import com.choegozip.domain.model.Album
+import com.choegozip.domain.model.media.Album
 
 data class AlbumUiModel (
     val title: String,

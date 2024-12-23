@@ -1,4 +1,4 @@
-package com.choegozip.domain.usecase
+package com.choegozip.domain.usecase.playback
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 

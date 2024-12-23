@@ -1,9 +1,9 @@
 package com.choegozip.presentation.main.album
 
 import androidx.lifecycle.ViewModel
-import com.choegozip.domain.model.PlayMedia
-import com.choegozip.domain.usecase.GetMediaListUseCase
-import com.choegozip.domain.usecase.PlayMediaUseCase
+import com.choegozip.domain.model.playback.PlayMedia
+import com.choegozip.domain.usecase.media.GetMediaListUseCase
+import com.choegozip.domain.usecase.playback.PlayMediaUseCase
 import com.choegozip.presentation.model.MediaUiModel
 import com.choegozip.presentation.model.toUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel

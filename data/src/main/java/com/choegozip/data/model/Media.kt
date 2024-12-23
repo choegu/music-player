@@ -1,7 +1,7 @@
 package com.choegozip.data.model
 
 import androidx.media3.common.MediaItem
-import com.choegozip.domain.model.Media
+import com.choegozip.domain.model.media.Media
 
 fun MediaItem?.toDomainModel(): Media {
     val metadata = this?.mediaMetadata
