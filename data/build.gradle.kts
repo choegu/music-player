@@ -16,7 +16,7 @@ android {
     defaultConfig {
         minSdk = 28
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.choegozip.data.CustomRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -73,4 +73,21 @@ dependencies {
 
     // gson
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Unit Test
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    testImplementation("io.mockk:mockk:1.13.5")
+
+    // Android Test
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.48")
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.1")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+
+    testImplementation("org.mockito:mockito-android:5.5.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
+    androidTestImplementation("org.mockito:mockito-android:5.5.0")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:5.1.0")
 }

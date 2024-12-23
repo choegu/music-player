@@ -22,6 +22,7 @@ class MediaItemRepository @Inject constructor(
 
     /**
      * 모든 음악 형태의 미디어 아이템 가져오기
+     * TODO contentResolver query 리턴값을 받아서 처리하도록 함수를 나누면, 테스트 케이스 추가 생성 가능
      */
     fun getAllMusicAsMediaItems(): List<Media> {
         val mediaItems = mutableListOf<Media>()
