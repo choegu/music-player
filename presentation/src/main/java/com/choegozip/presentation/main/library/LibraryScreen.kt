@@ -4,6 +4,8 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -65,19 +67,27 @@ private fun LibraryScreen(
     onAlbumClick: (AlbumUiModel) -> Unit,
 ) {
     Surface {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            contentPadding = PaddingValues(16.dp),
-            modifier = Modifier
-                .fillMaxSize(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(albumList) { album ->
-                AlbumCard(
-                    album = album,
-                    onAlbumClick = onAlbumClick
-                )
+        Crossfade(
+            targetState = albumList,
+            label = "LibraryScreen AlbumList Crossfade",
+            animationSpec = tween(
+                durationMillis = 500
+            )
+        ) { targetState ->
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                contentPadding = PaddingValues(16.dp),
+                modifier = Modifier
+                    .fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(targetState) { album ->
+                    AlbumCard(
+                        album = album,
+                        onAlbumClick = onAlbumClick
+                    )
+                }
             }
         }
     }
