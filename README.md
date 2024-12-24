@@ -43,8 +43,8 @@ The app contains the usual debug and release build variants.
 
 To facilitate testing of components, Music Player Sample App uses dependency injection with Hilt.
 
-The tests are categorized by functionality:
-Data tests: Each of the repositories, preferences, etc.
+The tests are categorized by functionality:  
+Data tests: Each of the repositories, preferences, etc.  
 Presentation tests: Each of the ViewModel logic, screen UI, etc.
 
 # UI
