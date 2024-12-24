@@ -21,12 +21,14 @@ class MediaItemRepository @Inject constructor(
     private lateinit var totalMediaList: List<Media>
 
     /**
-     * 모든 음악 형태의 미디어 아이템 가져오기
+     * 미디어스토어에서 음악 아이템 가져오기
+     *
      * TODO contentResolver query 리턴값을 받아서 처리하도록 함수를 나누면, 테스트 케이스 추가 생성 가능
      */
     fun getAllMusicAsMediaItems(): List<Media> {
         val mediaItems = mutableListOf<Media>()
 
+        // 가져올 컬럼명 지정
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.DISPLAY_NAME,
@@ -38,8 +40,10 @@ class MediaItemRepository @Inject constructor(
             MediaStore.Audio.Media.TITLE
         )
 
+        // 음악 파일을 가져오기 위한 조건
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
 
+        // 미디어스토어에 쿼리 실행
         val cursor = context.contentResolver.query(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             projection,
@@ -48,7 +52,10 @@ class MediaItemRepository @Inject constructor(
             MediaStore.Audio.Media.TITLE + " ASC"
         )
 
+        // 커서 사용 후 닫기
         cursor?.use {
+
+            // 각 컬럼명에 해당하는 인덱스 가져오기
             val idColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
             val displayNameColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
             val dataColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
@@ -58,7 +65,10 @@ class MediaItemRepository @Inject constructor(
             val durationColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
             val titleColumn = it.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
 
+            // 커서 행 반복
             while (it.moveToNext()) {
+
+                // 인덱스를 이용해 각 행의 데이터 읽어오기
                 val id = it.getLong(idColumn)
                 val displayName = it.getString(displayNameColumn)
                 val data = it.getString(dataColumn)

@@ -49,7 +49,11 @@ class PlaybackRepository @Inject constructor(
     fun getUiComponentInfo() = mediaControllerSharedPrefs.getUiComponent()
 
     /**
-     * 재생 컴포넌트 정보 가져오기
+     * UI 컴포넌트 전달하면서, 재생 컴포넌트 정보 가져오기
+     *
+     * data 모듈에서 세션액티비티로 사용하기 위해, presentation 모듈의 액티비티 정보가 필요하다.
+     * presentation 모듈에서 playerView 에 연결하기 위해, data 모듈의 mediaController 정보가 필요하다.
+     * 각 ComponentName 정보를 domain 모듈을 통해 String으로 전달하여, ComponentName 을 구성한다.
      */
     suspend fun getPlaybackComponent(uiComponentInfo: ComponentInfo): ComponentInfo {
         // 기존 리스너 제거
@@ -76,7 +80,7 @@ class PlaybackRepository @Inject constructor(
     }
 
     /**
-     * 재생 상태 가져오기
+     * 재생 상태 구독하기
      */
     suspend fun getPlayWhenReady(flow: MutableSharedFlow<Boolean>) {
         withContext(Dispatchers.Main) {
@@ -94,7 +98,7 @@ class PlaybackRepository @Inject constructor(
     }
 
     /**
-     * 재생 포지션 변경 시점 가져오기
+     * 재생 포지션 변경 상태 구독하기
      */
     suspend fun getPositionChanged(flow: MutableSharedFlow<PlaybackPosition>) {
         withContext(Dispatchers.Main) {
@@ -126,7 +130,7 @@ class PlaybackRepository @Inject constructor(
     }
 
     /**
-     * 미디어 변경 가져오기
+     * 미디어 변경 트랜지션 구독하기
      */
     suspend fun getMediaItemTransition(flow: MutableSharedFlow<Media>) {
         withContext(Dispatchers.Main) {
@@ -246,6 +250,7 @@ class PlaybackRepository @Inject constructor(
 
     /**
      * 컨트롤러 강제 세팅
+     *
      * TODO 해당 함수 없이 테스트 가능한 구조 고민하기
      */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
