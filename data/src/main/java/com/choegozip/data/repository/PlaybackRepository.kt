@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -246,15 +245,5 @@ class PlaybackRepository @Inject constructor(
      */
     fun releaseController() {
         MediaController.releaseFuture(controllerFuture)
-    }
-
-    /**
-     * 컨트롤러 강제 세팅
-     *
-     * TODO 해당 함수 없이 테스트 가능한 구조 고민하기
-     */
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun setController(controller: MediaController) {
-        this.controller = controller
     }
 }
