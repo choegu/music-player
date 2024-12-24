@@ -74,7 +74,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // 앱단 모듈
-    implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":presentation"))
 
