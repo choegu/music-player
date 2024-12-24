@@ -13,6 +13,7 @@ material = "1.10.0"
 hilt = "2.48.1"
 orbit = "6.1.0"
 coil = "2.3.0"
+rules = "1.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,7 @@ orbit-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref =
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil"}
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil"}
 datastore = { module = "androidx.datastore:datastore-preferences", version = "1.0.0" }
+androidx-rules = { group = "androidx.test", name = "rules", version.ref = "rules" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

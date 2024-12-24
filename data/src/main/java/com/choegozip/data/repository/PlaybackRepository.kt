@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -77,62 +78,68 @@ class PlaybackRepository @Inject constructor(
     /**
      * 재생 상태 가져오기
      */
-    fun getPlayWhenReady(flow: MutableSharedFlow<Boolean>) {
-        playWhenReadyListener = object : Player.Listener {
-            override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-                Log.d("PlayerState", "PlayWhenReady changed: $playWhenReady, Reason: $reason")
-                flow.tryEmit(playWhenReady)
+    suspend fun getPlayWhenReady(flow: MutableSharedFlow<Boolean>) {
+        withContext(Dispatchers.Main) {
+            playWhenReadyListener = object : Player.Listener {
+                override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+                    Log.d("PlayerState", "PlayWhenReady changed: $playWhenReady, Reason: $reason")
+                    flow.tryEmit(playWhenReady)
+                }
             }
-        }
-        controller.addListener(playWhenReadyListener)
+            controller.addListener(playWhenReadyListener)
 
-        // 연결 직후 1회 방출
-        flow.tryEmit(controller.playWhenReady)
+            // 연결 직후 1회 방출
+            flow.tryEmit(controller.playWhenReady)
+        }
     }
 
     /**
      * 재생 포지션 변경 시점 가져오기
      */
-    fun getPositionChanged(flow: MutableSharedFlow<PlaybackPosition>) {
-        positionChangedListener = object : Player.Listener {
-            override fun onPositionDiscontinuity(
-                oldPosition: Player.PositionInfo,
-                newPosition: Player.PositionInfo,
-                reason: Int
-            ) {
-                super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                flow.tryEmit(
-                    PlaybackPosition(
-                        duration = controller.duration,
-                        currentPosition = controller.currentPosition
+    suspend fun getPositionChanged(flow: MutableSharedFlow<PlaybackPosition>) {
+        withContext(Dispatchers.Main) {
+            positionChangedListener = object : Player.Listener {
+                override fun onPositionDiscontinuity(
+                    oldPosition: Player.PositionInfo,
+                    newPosition: Player.PositionInfo,
+                    reason: Int
+                ) {
+                    super.onPositionDiscontinuity(oldPosition, newPosition, reason)
+                    flow.tryEmit(
+                        PlaybackPosition(
+                            duration = controller.duration,
+                            currentPosition = controller.currentPosition
+                        )
                     )
-                )
+                }
             }
-        }
-        controller.addListener(positionChangedListener)
+            controller.addListener(positionChangedListener)
 
-        // 연결 직후 1회 방출
-        flow.tryEmit(
-            PlaybackPosition(
-                duration = controller.duration,
-                currentPosition = controller.currentPosition
+            // 연결 직후 1회 방출
+            flow.tryEmit(
+                PlaybackPosition(
+                    duration = controller.duration,
+                    currentPosition = controller.currentPosition
+                )
             )
-        )
+        }
     }
 
     /**
      * 미디어 변경 가져오기
      */
-    fun getMediaItemTransition(flow: MutableSharedFlow<Media>) {
-        mediaItemTransitionListener = object : Player.Listener {
-            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
-                flow.tryEmit(mediaItem.toDomainModel())
+    suspend fun getMediaItemTransition(flow: MutableSharedFlow<Media>) {
+        withContext(Dispatchers.Main) {
+            mediaItemTransitionListener = object : Player.Listener {
+                override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+                    flow.tryEmit(mediaItem.toDomainModel())
+                }
             }
-        }
-        controller.addListener(mediaItemTransitionListener)
+            controller.addListener(mediaItemTransitionListener)
 
-        // 연결 직후 1회 방출
-        flow.tryEmit(controller.currentMediaItem.toDomainModel())
+            // 연결 직후 1회 방출
+            flow.tryEmit(controller.currentMediaItem.toDomainModel())
+        }
     }
 
     /**
@@ -235,5 +242,14 @@ class PlaybackRepository @Inject constructor(
      */
     fun releaseController() {
         MediaController.releaseFuture(controllerFuture)
+    }
+
+    /**
+     * 컨트롤러 강제 세팅
+     * TODO 해당 함수 없이 테스트 가능한 구조 고민하기
+     */
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun setController(controller: MediaController) {
+        this.controller = controller
     }
 }

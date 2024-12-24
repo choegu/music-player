@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.rules)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,8 +82,15 @@ dependencies {
 
     // Android Test
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
+    androidTestImplementation("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.5.0")
+    androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.arch.core:core-testing:2.1.0")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.48")
+    androidTestImplementation("app.cash.turbine:turbine:0.12.1")
+
     kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
     debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.1")
     testImplementation("org.robolectric:robolectric:4.10.3")
