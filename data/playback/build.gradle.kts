@@ -52,9 +52,9 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     // Media3 ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.2.0")
-    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 
     // Media3 Session
-    implementation("androidx.media3:media3-session:1.2.0")
+    implementation(libs.androidx.media3.session)
 }

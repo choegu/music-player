@@ -60,20 +60,20 @@ dependencies {
     implementation(libs.datastore)
 
     // Media3 ExoPlayer
-    implementation("androidx.media3:media3-exoplayer:1.2.0")
-    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
 
     // Media3 Session
-    implementation("androidx.media3:media3-session:1.2.0")
+    implementation(libs.androidx.media3.session)
 
     // Guava
-    implementation("com.google.guava:guava:32.1.2-jre")
+    implementation(libs.guava)
 
     // Guava와 Kotlin Coroutines 통합
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.7.1")
+    implementation(libs.kotlinx.coroutines.guava)
 
     // gson
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.gson)
 
     // Unit Test
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
