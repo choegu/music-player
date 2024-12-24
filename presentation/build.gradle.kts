@@ -98,14 +98,13 @@ dependencies {
     implementation(libs.kotlinx.coroutines.guava)
 
     // Unit Test
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
-    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.robolectric)
 
     // Android Test
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.5.1")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.48")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.48")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:1.5.1")
-    testImplementation("org.robolectric:robolectric:4.10.3")
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
