@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
 import com.choegozip.domain.model.playback.PlayMedia
+import com.choegozip.presentation.R
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -116,10 +118,14 @@ private fun AlbumScreen(
 
             // 재생 버튼과 셔플 버튼 TODO 간격 등 조금 더 예쁘게 변경
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
+                    modifier = Modifier
+                        .weight(1f),
                     onClick = {
                         onPlayMedia(
                             PlayMedia(
@@ -142,6 +148,8 @@ private fun AlbumScreen(
                 }
 
                 Button(
+                    modifier = Modifier
+                        .weight(1f),
                     onClick = {
                         onPlayMedia(
                             PlayMedia(
@@ -156,10 +164,9 @@ private fun AlbumScreen(
                         containerColor = MaterialTheme.colorScheme.secondary
                     )
                 ) {
-                    // TODO 이미지 어울리는 것으로 변경
                     Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Play",
+                        painter = painterResource(R.drawable.ic_shuffle),
+                        contentDescription = "Shuffle",
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

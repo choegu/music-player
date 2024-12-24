@@ -30,12 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.Log
 import coil.compose.rememberAsyncImagePainter
 import com.choegozip.domain.model.playback.PlaybackPosition
+import com.choegozip.presentation.R
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -129,13 +131,21 @@ private fun SmallPlayerScreen(
                 ) {
                     // Play / Pause 버튼
                     IconButton(onClick = onPlayPauseClicked) {
-                        // TODO pause 아이콘 어울리는 걸로 변경
-                        Icon(
-                            imageVector = if (playerWhenReady) Icons.Default.Menu else Icons.Default.PlayArrow,
-                            contentDescription = "Play/Pause",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(48.dp)
-                        )
+                        if (playerWhenReady) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_pause),
+                                contentDescription = "Play/Pause",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(48.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "Play/Pause",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(48.dp)
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.width(16.dp))

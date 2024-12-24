@@ -18,12 +18,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.media3.ui.PlayerView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.util.UnstableApi
+import com.choegozip.presentation.R
 import com.choegozip.presentation.main.MainViewModel
 import com.choegozip.presentation.model.MediaUiModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -152,7 +154,9 @@ private fun BigPlayerScreen(
                             }
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Menu,
+                                painter = painterResource(R.drawable.ic_volume),
+                                modifier = Modifier
+                                    .padding(16.dp),
                                 contentDescription = "Volume",
                                 tint = MaterialTheme.colorScheme.primary
                             )
